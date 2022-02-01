@@ -1,0 +1,1 @@
+#include "CBooleanVariant.h"
