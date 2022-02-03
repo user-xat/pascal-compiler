@@ -11,6 +11,7 @@ private:
 public:
 	CBooleanVariant(bool value);
 	bool GetValue();
+	std::string ToString() override;
 };
 
 #endif // !_CBOOLEAN_VARIANT_H_

@@ -4,7 +4,7 @@
 
 #include "ETokenType.h"
 #include <string>
-using namespace std;
+#include <memory>
 
 class CToken
 {
@@ -13,7 +13,9 @@ private:
 public:
 	CToken(ETokenType type);
 	ETokenType GetType();
-	virtual string ToString() = 0;
+	virtual std::string ToString() = 0;
 };
+
+typedef std::unique_ptr<CToken> CTokenPtr;
 
 #endif // !_CTOKEN_H_

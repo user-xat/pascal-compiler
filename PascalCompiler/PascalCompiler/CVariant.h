@@ -3,8 +3,8 @@
 #define _CVARIANT_H_
 
 #include <string>
+#include <memory>
 #include "EVariantType.h"
-using namespace std;
 
 class CVariant
 {
@@ -13,7 +13,9 @@ private:
 public:
 	CVariant(EVariantType type);
 	EVariantType GetType();
-	virtual string ToString() = 0;
+	virtual std::string ToString() = 0;
 };
+
+typedef std::unique_ptr<CVariant> CVariantPtr;
 
 #endif // !_CVARIANT_H_

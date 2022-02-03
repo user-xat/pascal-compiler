@@ -11,6 +11,7 @@ private:
 public:
 	CIntVariant(int value);
 	int GetValue();
+	std::string ToString() override;
 };
 
 #endif // !_CINT_VARIANT_H_

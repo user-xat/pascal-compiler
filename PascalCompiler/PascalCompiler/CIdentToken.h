@@ -6,6 +6,11 @@
 
 class CIdentToken : public CToken
 {
+private:
+
+public:
+	CIdentToken();
+	std::string ToString() override;
 };
 
 #endif // !_CIDENT_TOKEN_H_

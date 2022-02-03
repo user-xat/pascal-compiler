@@ -1,0 +1,12 @@
+﻿var
+  a,b,c:integer;
+  name:string;
+begin
+  a := 3;
+  b:= 10;
+  c :=4;
+  if a + b <= 10 then
+    c := a*b
+  else c:=b-a;
+  write(c);
+end.  

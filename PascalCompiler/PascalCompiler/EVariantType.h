@@ -2,7 +2,7 @@
 #ifndef _VARIANT_TYPE_H_
 #define _VARIANT_TYPE_H_
 
-enum EVariantType
+enum class EVariantType
 {
 	INTEGER,
 	REAL,

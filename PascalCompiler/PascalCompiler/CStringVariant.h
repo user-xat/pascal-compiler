@@ -7,10 +7,11 @@
 class CStringVariant : public CVariant
 {
 private:
-	string value;
+	std::string value;
 public:
-	CStringVariant(string value);
-	string GetValue();
+	CStringVariant(std::string value);
+	std::string GetValue();
+	std::string ToString() override;
 };
 
 #endif // !_CSTRING_VARIANT_H_

@@ -11,6 +11,7 @@ private:
 public:
 	CRealVariant(double value);
 	double GetValue();
+	std::string ToString() override;
 };
 
 

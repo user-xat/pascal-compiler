@@ -3,17 +3,22 @@
 #define _CIO_FILE_H_
 
 #include <string>
-using namespace std;
+#include <fstream>
+#include <memory>
 
 class CIOFile
 {
 private:
-	string path;
+	std::ifstream file;
+	std::string path;
 	int numLine;
 public:
-	CIOFile(string path);
-	string GetNextLine();
+	CIOFile(const std::string& path);
+	~CIOFile();
+	bool GetNextLine(std::string& line);
 	int GetNumLine();
 };
+
+typedef std::unique_ptr<CIOFile> CIOFilePtr;
 
 #endif // !_CIO_FILE_H_

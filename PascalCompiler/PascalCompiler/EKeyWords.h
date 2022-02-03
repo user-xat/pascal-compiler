@@ -2,7 +2,7 @@
 #ifndef _KEY_WORDS_H_
 #define _KEY_WORDS_H_
 
-enum EKeyWords
+enum class EKeyWords
 {
 	// arithmetic operators
 	AOP_ASSIGN,
