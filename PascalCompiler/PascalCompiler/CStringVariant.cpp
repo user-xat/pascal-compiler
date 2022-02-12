@@ -9,3 +9,8 @@ std::string CStringVariant::GetValue()
 {
 	return this->value;
 }
+
+std::string CStringVariant::ToString()
+{
+	return std::string("STRING: " + this->value);
+}

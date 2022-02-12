@@ -3,6 +3,7 @@
 #define _CIO_FILE_H_
 
 #include <string>
+#include <algorithm>
 #include <fstream>
 #include <memory>
 

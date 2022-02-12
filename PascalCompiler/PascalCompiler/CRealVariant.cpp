@@ -9,3 +9,8 @@ double CRealVariant::GetValue()
 {
 	return this->value;
 }
+
+std::string CRealVariant::ToString()
+{
+	return std::string("REAL: " + std::to_string(this->value));
+}

@@ -4,6 +4,11 @@
 
 enum class EKeyWords
 {
+	// types
+	INTEGER,
+	REAL,
+	STRING,
+	BOOLEAN,
 	// arithmetic operators
 	AOP_ASSIGN,
 	AOP_SUM,
@@ -17,12 +22,13 @@ enum class EKeyWords
 	LOP_XOR,
 	// comparison operators
 	COP_LT,
-	COP_LTE,
+	COP_LE,
 	COP_GT,
-	COP_GTE,
+	COP_GE,
 	COP_EQ,
-	COP_NEQ,
+	COP_NE,
 	// rest keywords
+	END_OF_STATEMENT,
 	BEGIN,
 	END,
 	VAR,

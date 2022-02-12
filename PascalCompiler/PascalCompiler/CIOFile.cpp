@@ -27,3 +27,9 @@ int CIOFile::GetNumLine()
 {
 	return numLine;
 }
+
+//void CIOFile::ToLower(std::string& line) {
+//	std::for_each(line.begin(), line.end(), [](char& c) {
+//		c = tolower(c);
+//	});
+//}

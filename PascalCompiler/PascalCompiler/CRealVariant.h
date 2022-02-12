@@ -14,5 +14,6 @@ public:
 	std::string ToString() override;
 };
 
+typedef std::unique_ptr<CRealVariant> CRealVariantPtr;
 
 #endif // !_CREAL_VARIANT_H_

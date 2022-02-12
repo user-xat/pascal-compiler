@@ -4,6 +4,10 @@
 
 #include "CIOFile.h"
 #include "CToken.h"
+#include "CConstToken.h"
+#include "CIdentToken.h"
+#include "CKeywordToken.h"
+#include <sstream>
 
 class CLexer
 {
@@ -13,7 +17,23 @@ private:
 	int ch_num;
 public:
 	CLexer(const std::string& path_to_file);
-	CToken GetNextToken();
+	CTokenPtr GetNextToken();
+private:
+	std::string GetWord();
+	std::string GetNumber();
+	bool IsLetter(const char ch);
+	bool IsDigit(const char ch);
+	bool IsWhiteSpace(const char ch);
+	template<typename T>
+	bool IsNumber(std::string num, T& value);
 };
+
+template<typename T>
+bool CLexer::IsNumber(std::string num, T& value) {
+	std::stringstream ss;
+	ss << num;
+	ss >> value;
+	return ss.good();
+}
 
 #endif // !_CLEXER_H_

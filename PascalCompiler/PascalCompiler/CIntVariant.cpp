@@ -9,3 +9,8 @@ int CIntVariant::GetValue()
 {
 	return this->value;
 }
+
+std::string CIntVariant::ToString()
+{
+	return std::string("INTEGER: " + std::to_string(this->value));
+}
