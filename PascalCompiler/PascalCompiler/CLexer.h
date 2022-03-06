@@ -37,7 +37,7 @@ bool CLexer::IsNumber(std::string num, T& value) {
 	std::stringstream ss;
 	ss << num;
 	ss >> value;
-	return ss.good();
+	return !ss.fail();
 }
 
 #endif // !_CLEXER_H_

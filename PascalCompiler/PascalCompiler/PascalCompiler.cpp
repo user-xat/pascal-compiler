@@ -1,17 +1,28 @@
 #include <iostream>
 #include <memory>
 #include "CIOFile.h"
-using namespace std;
+#include "CLexer.h"
 
 int main()
 {
-    string path = "test.pas";
-    //std::unique_ptr<CIOFile> io_module_ptr(new CIOFile(path));
-    CIOFile io_module(path);
-    string line;
-    while (io_module.GetNextLine(line)) {
-        std::cout << line << std::endl;
-    }
+    using namespace std;
+    string path = "test.txt";
+    //CIOFile io_module(path);
+    //string line;
+    //while (io_module.GetNextLine(line)) {
+    //    std::cout << line << std::endl;
+    //}
+    CLexer lexer(path);
+    CTokenPtr token;
+    int i = 0;
+    do
+    {
+        token.reset();
+        ++i;
+        token = lexer.GetNextToken();
+        if (token != nullptr)
+            cout << i << ": " << token->ToString() << "\n";
+    } while (token != nullptr);
 
     return 0;
 }

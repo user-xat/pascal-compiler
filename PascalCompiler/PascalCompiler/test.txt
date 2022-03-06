@@ -1,6 +1,5 @@
-﻿var
-  a,b,c:integer;
-  name:string;
+var a,b,c: integer;
+	name:string;
 begin
   a := 3;
   b:= 10;
@@ -8,5 +7,4 @@ begin
   if a + b <= 10 then
     c := a*b
   else c:=b-a;
-  write(c);
-end.  
+end. 

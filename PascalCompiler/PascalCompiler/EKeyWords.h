@@ -41,6 +41,8 @@ enum class EKeyWords
 	COLON,
 	OPENING_BRACKET,
 	CLOSING_BRACKET,
+	SINGLE_QOUTE,
+	COMMA,
 };
 
 #endif // !_KEY_WORDS_H_

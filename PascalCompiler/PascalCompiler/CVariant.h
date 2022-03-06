@@ -16,6 +16,6 @@ public:
 	virtual std::string ToString() = 0;
 };
 
-typedef std::unique_ptr<CVariant> CVariantPtr;
+using CVariantPtr = std::unique_ptr<CVariant>;
 
 #endif // !_CVARIANT_H_

@@ -112,6 +112,12 @@ std::string CKeywordToken::ToString()
 	case EKeyWords::CLOSING_BRACKET:
 		result = ")";
 		break;
+	case EKeyWords::SINGLE_QOUTE:
+		result = "'";
+		break;
+	case EKeyWords::COMMA:
+		result = ",";
+		break;
 	default:
 		result = "[ERROR] Unknown keyword!";
 		break;

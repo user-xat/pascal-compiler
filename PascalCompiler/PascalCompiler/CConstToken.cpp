@@ -1,18 +1,26 @@
 #include "CConstToken.h"
 
-//CConstToken::CConstToken(EVariantType variant_type) : CToken(ETokenType::CONST)
-//{
-//	switch (variant_type)
-//	{
-//	case EVariantType::INTEGER:
-//		break;
-//	case EVariantType::REAL:
-//		break;
-//	case EVariantType::STRING:
-//		break;
-//	case EVariantType::BOOLEAN:
-//		break;
-//	default:
-//		break;
-//	}
-//}
+CConstToken::CConstToken(int value) : CToken(ETokenType::CONST)
+{
+	this->variant = std::make_unique<CIntVariant>(value);
+}
+
+CConstToken::CConstToken(double value) : CToken(ETokenType::CONST)
+{
+	this->variant = std::make_unique<CRealVariant>(value);
+}
+
+CConstToken::CConstToken(std::string value) : CToken(ETokenType::CONST)
+{
+	this->variant = std::make_unique<CStringVariant>(value);
+}
+
+CConstToken::CConstToken(bool value) : CToken(ETokenType::CONST)
+{
+	this->variant = std::make_unique<CBooleanVariant>(value);
+}
+
+std::string CConstToken::ToString()
+{
+	return variant->ToString();
+}

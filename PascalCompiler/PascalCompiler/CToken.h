@@ -16,6 +16,6 @@ public:
 	virtual std::string ToString() = 0;
 };
 
-typedef std::unique_ptr<CToken> CTokenPtr;
+using CTokenPtr = std::unique_ptr<CToken>;
 
 #endif // !_CTOKEN_H_
