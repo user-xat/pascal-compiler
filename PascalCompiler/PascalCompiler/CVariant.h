@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _CVARIANT_H_
-#define _CVARIANT_H_
+#ifndef CVARIANT_H
+#define CVARIANT_H
 
 #include <string>
 #include <memory>

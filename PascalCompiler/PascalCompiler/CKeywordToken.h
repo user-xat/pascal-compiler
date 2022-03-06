@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _CKEYWORD_TOKEN_H_
-#define _CKEYWORD_TOKEN_H_
+#ifndef CKEYWORD_TOKEN_H
+#define CKEYWORD_TOKEN_H
 
 #include "CToken.h"
 #include "EKeyWords.h"

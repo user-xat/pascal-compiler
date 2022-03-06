@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _TOKEN_TYPE_H_
-#define _TOKEN_TYPE_H_
+#ifndef TOKEN_TYPE_H
+#define TOKEN_TYPE_H
 
 enum class ETokenType
 {

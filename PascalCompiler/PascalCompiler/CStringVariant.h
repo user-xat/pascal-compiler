@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _CSTRING_VARIANT_H_
-#define _CSTRING_VARIANT_H_
+#ifndef CSTRING_VARIANT_H
+#define CSTRING_VARIANT_H
 
 #include "CVariant.h"
 

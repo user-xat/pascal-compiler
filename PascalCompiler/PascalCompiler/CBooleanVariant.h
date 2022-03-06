@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _CBOOLEAN_VARIANT_H_
-#define _CBOOLEAN_VARIANT_H_
+#ifndef CBOOLEAN_VARIANT_H
+#define CBOOLEAN_VARIANT_H
 
 #include "CVariant.h"
 

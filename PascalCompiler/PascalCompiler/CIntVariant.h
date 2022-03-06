@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _CINT_VARIANT_H_
-#define _CINT_VARIANT_H_
+#ifndef CINT_VARIANT_H
+#define CINT_VARIANT_H
 
 #include "CVariant.h"
 

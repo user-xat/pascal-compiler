@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _CLEXER_H_
-#define _CLEXER_H_
+#ifndef CLEXER_H
+#define CLEXER_H
 
 #include "CIOFile.h"
 #include "CToken.h"
@@ -21,6 +21,10 @@ public:
 private:
 	std::string GetWord();
 	std::string GetNumber();
+	bool GetNewLine();
+	bool SkipSpaces();
+	bool SkipComments();
+	CTokenPtr ProccessingWord();
 	bool IsLetter(const char ch);
 	bool IsDigit(const char ch);
 	bool IsWhiteSpace(const char ch);

@@ -103,7 +103,17 @@ std::string CKeywordToken::ToString()
 	case EKeyWords::DO:
 		result = "do";
 		break;
+	case EKeyWords::COLON:
+		result = ":";
+		break;
+	case EKeyWords::OPENING_BRACKET:
+		result = "(";
+		break;
+	case EKeyWords::CLOSING_BRACKET:
+		result = ")";
+		break;
 	default:
+		result = "[ERROR] Unknown keyword!";
 		break;
 	}
 

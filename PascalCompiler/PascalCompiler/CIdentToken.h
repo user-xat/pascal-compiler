@@ -1,15 +1,15 @@
 #pragma once
-#ifndef _CIDENT_TOKEN_H_
-#define _CIDENT_TOKEN_H_
+#ifndef CIDENT_TOKEN_H
+#define CIDENT_TOKEN_H
 
 #include "CToken.h"
 
 class CIdentToken : public CToken
 {
 private:
-
+	std::string name;
 public:
-	CIdentToken();
+	CIdentToken(std::string name);
 	std::string ToString() override;
 };
 

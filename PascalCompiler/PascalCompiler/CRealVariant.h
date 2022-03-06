@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _CREAL_VARIANT_H_
-#define _CREAL_VARIANT_H_
+#ifndef CREAL_VARIANT_H
+#define CREAL_VARIANT_H
 
 #include "CVariant.h"
 

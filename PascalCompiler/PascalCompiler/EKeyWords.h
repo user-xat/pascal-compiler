@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _KEY_WORDS_H_
-#define _KEY_WORDS_H_
+#ifndef KEY_WORDS_H
+#define KEY_WORDS_H
 
 enum class EKeyWords
 {
@@ -37,7 +37,10 @@ enum class EKeyWords
 	THEN,
 	ELSE,
 	WHILE,
-	DO
+	DO,
+	COLON,
+	OPENING_BRACKET,
+	CLOSING_BRACKET,
 };
 
 #endif // !_KEY_WORDS_H_

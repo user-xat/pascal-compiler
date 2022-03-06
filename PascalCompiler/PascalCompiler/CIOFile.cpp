@@ -4,7 +4,7 @@ CIOFile::CIOFile(const std::string& path) {
 	this->path = path;
 	numLine = 0;
 	file.open(path);
-	if (file.is_open())
+	if (!file.is_open())
 	{
 		// TODO
 	}
@@ -20,6 +20,7 @@ bool CIOFile::GetNextLine(std::string& line) {
 		numLine++;
 		return true;
 	}
+	line = "";
 	return false;
 }
 
@@ -27,9 +28,3 @@ int CIOFile::GetNumLine()
 {
 	return numLine;
 }
-
-//void CIOFile::ToLower(std::string& line) {
-//	std::for_each(line.begin(), line.end(), [](char& c) {
-//		c = tolower(c);
-//	});
-//}

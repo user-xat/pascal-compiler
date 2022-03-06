@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _CIO_FILE_H_
-#define _CIO_FILE_H_
+#ifndef CIO_FILE_H
+#define CIO_FILE_H
 
 #include <string>
 #include <algorithm>

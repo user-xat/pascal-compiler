@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _CTOKEN_H_
-#define _CTOKEN_H_
+#ifndef CTOKEN_H
+#define CTOKEN_H
 
 #include "ETokenType.h"
 #include <string>
