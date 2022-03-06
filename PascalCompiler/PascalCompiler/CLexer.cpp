@@ -9,15 +9,15 @@ CLexer::CLexer(const std::string& path_to_file)
 CTokenPtr CLexer::GetNextToken()
 {
 	CTokenPtr token;
-	// Пропуск проблелов
-	if (!SkipSpaces()) {
-		return nullptr;
-	}
 	// Получение новой строки
-	if (line.empty() || ch_num >= line.size()) {
+	while (line.empty() || ch_num >= line.size()) {
 		if (!GetNewLine()) {
 			return nullptr;
 		}
+	}
+	// Пропуск проблелов
+	if (!SkipSpaces()) {
+		return nullptr;
 	}
 	// Обработка комментариев
 	if (!SkipComments()) {
@@ -25,8 +25,12 @@ CTokenPtr CLexer::GetNextToken()
 	}
 	// Ищем токен
 	if (line[ch_num] == ',') {
-		++ch_num;
 		token = std::make_unique<CKeywordToken>(EKeyWords::COMMA);
+		++ch_num;
+	}
+	else if (line[ch_num] == '=') {
+		token = std::make_unique<CKeywordToken>(EKeyWords::COP_EQ);
+		++ch_num;
 	}
 	else if (line[ch_num] == ':') {
 		++ch_num;
@@ -42,6 +46,10 @@ CTokenPtr CLexer::GetNextToken()
 		++ch_num;
 		if (ch_num < line.length() && line[ch_num] == '=') {
 			token = std::make_unique<CKeywordToken>(EKeyWords::COP_LE);
+			++ch_num;
+		}
+		else if (ch_num < line.length() && line[ch_num] == '>') {
+			token = std::make_unique<CKeywordToken>(EKeyWords::COP_NE);
 			++ch_num;
 		}
 		else {
@@ -163,6 +171,9 @@ bool CLexer::GetNewLine()
 
 bool CLexer::SkipSpaces() {
 	bool success{ true };
+	if (ch_num >= line.size()) {
+		success = GetNewLine();
+	}
 	while (success && IsWhiteSpace(line[ch_num]))
 	{
 		++ch_num;
@@ -180,19 +191,20 @@ bool CLexer::SkipComments() {
 		do
 		{
 			success = GetNewLine();
+			success = SkipSpaces();
 		} while (success && ch_num < line.size() - 1 && line[ch_num] == '/' && line[ch_num + 1] == '/');
 	}
 	// { comment }
-	else if (line[ch_num] == '{') {
+	else if (ch_num < line.size() && line[ch_num] == '{') {
 		while (line[ch_num] != '}')
 		{
+			++ch_num;
 			if (ch_num >= line.size()) {
 				success = GetNewLine();
 			}
 			if (!success) {
 				// TODO: Error
 			}
-			++ch_num;
 		}
 		++ch_num;
 	}
@@ -200,15 +212,15 @@ bool CLexer::SkipComments() {
 	else if (ch_num < line.size() - 1 && line[ch_num] == '(' && line[ch_num + 1] == '*') {
 		do
 		{
-			if (ch_num >= line.size()) {
+			++ch_num;
+			if (ch_num >= line.size() - 1) {
 				success = GetNewLine();
 			}
 			if (!success) {
 				// TODO: Error
 			}
-			++ch_num;
-		} while (line[ch_num - 1] != '*' && line[ch_num] != ')');
-		++ch_num;
+		} while (ch_num < line.size() - 1 && !(line[ch_num] == '*' && line[ch_num + 1] == ')'));
+		ch_num += 2;
 	}
 	success = SkipSpaces();
 	return success;

@@ -1,0 +1,27 @@
+var
+  a,b,c:integer;
+  name:string;
+  x:real;
+  flag:boolean;
+
+type
+  myint = integer;
+  str=string;
+
+begin
+  //some comment
+  a:= 10 mod 2;
+  b := 6 div 4;
+  x:= 2.1;
+  name :='some string';
+  flag:= True;
+  if (a = 2) and (b < 1) then
+    if (x >= 0) or (name <> 'some str') then
+      c := 2 + 4
+    else
+      name := 'text';
+  while 2 >= 5 do
+  begin
+    x:=3.3 / 3;
+  end;
+end.

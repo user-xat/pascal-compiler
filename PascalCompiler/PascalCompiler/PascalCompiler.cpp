@@ -6,7 +6,7 @@
 int main()
 {
     using namespace std;
-    string path = "test.txt";
+    string path = "medium.txt";
     //CIOFile io_module(path);
     //string line;
     //while (io_module.GetNextLine(line)) {
