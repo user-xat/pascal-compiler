@@ -1,11 +1,11 @@
 #include "CIdentToken.h"
 
-CIdentToken::CIdentToken(std::string name) : CToken(ETokenType::IDENT)
+CIdentToken::CIdentToken(std::string identifier) : CToken(ETokenType::IDENT)
 {
-	this->name = name;
+	this->identifier = identifier;
 }
 
 std::string CIdentToken::ToString()
 {
-	return name;
+	return identifier;
 }

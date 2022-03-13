@@ -14,6 +14,4 @@ public:
 	std::string ToString() override;
 };
 
-typedef std::unique_ptr<CStringVariant> CStringVariantPtr;
-
 #endif // !_CSTRING_VARIANT_H_

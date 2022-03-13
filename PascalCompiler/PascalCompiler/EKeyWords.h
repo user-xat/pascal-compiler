@@ -41,8 +41,15 @@ enum class EKeyWords
 	COLON,
 	OPENING_BRACKET,
 	CLOSING_BRACKET,
-	SINGLE_QOUTE,
+	SINGLE_QUOTE,
 	COMMA,
+	// individual 
+	FUNCTION,
+	FOR,
+	TO,
+	DOWNTO,
+	REPEAT,
+	UNTIL,
 };
 
 #endif // !_KEY_WORDS_H_

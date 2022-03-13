@@ -14,6 +14,4 @@ public:
 	std::string ToString() override;
 };
 
-typedef std::unique_ptr<CIntVariant> CIntVariantPtr;
-
 #endif // !_CINT_VARIANT_H_

@@ -2,6 +2,8 @@
 #include <memory>
 #include "CIOFile.h"
 #include "CLexer.h"
+#include <map>
+#include "EKeyWords.h"
 
 int main()
 {
@@ -12,6 +14,7 @@ int main()
     //while (io_module.GetNextLine(line)) {
     //    std::cout << line << std::endl;
     //}
+    
     CLexer lexer(path);
     CTokenPtr token;
     int i = 0;

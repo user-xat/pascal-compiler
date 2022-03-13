@@ -1,6 +1,6 @@
 #include "CLexer.h"
 
-CLexer::CLexer(const std::string& path_to_file)
+CLexer::CLexer(const std::string &path_to_file)
 {
 	this->file = std::make_unique<CIOFile>(path_to_file);
 	this->ch_num = 0;
@@ -8,7 +8,7 @@ CLexer::CLexer(const std::string& path_to_file)
 
 CTokenPtr CLexer::GetNextToken()
 {
-	CTokenPtr token;
+	CTokenPtr token = nullptr;
 	// Получение новой строки
 	while (line.empty() || ch_num >= line.size()) {
 		if (!GetNewLine()) {
@@ -25,74 +25,75 @@ CTokenPtr CLexer::GetNextToken()
 	}
 	// Ищем токен
 	if (line[ch_num] == ',') {
-		token = std::make_unique<CKeywordToken>(EKeyWords::COMMA);
+		token = std::make_unique<CKeywordToken>(key_words.find(",")->second);
 		++ch_num;
 	}
 	else if (line[ch_num] == '=') {
-		token = std::make_unique<CKeywordToken>(EKeyWords::COP_EQ);
+		token = std::make_unique<CKeywordToken>(key_words.find("=")->second);
 		++ch_num;
 	}
 	else if (line[ch_num] == ':') {
 		++ch_num;
 		if (ch_num < line.length() && line[ch_num] == '=') {
-			token = std::make_unique<CKeywordToken>(EKeyWords::AOP_ASSIGN);
+			token = std::make_unique<CKeywordToken>(key_words.find(":=")->second);
 			++ch_num;
 		}
 		else {
-			token = std::make_unique<CKeywordToken>(EKeyWords::COLON);
+			token = std::make_unique<CKeywordToken>(key_words.find(":")->second);
 		}
 	}
 	else if (line[ch_num] == '<') {
 		++ch_num;
 		if (ch_num < line.length() && line[ch_num] == '=') {
-			token = std::make_unique<CKeywordToken>(EKeyWords::COP_LE);
+			token = std::make_unique<CKeywordToken>(key_words.find("<=")->second);
 			++ch_num;
 		}
 		else if (ch_num < line.length() && line[ch_num] == '>') {
-			token = std::make_unique<CKeywordToken>(EKeyWords::COP_NE);
+			token = std::make_unique<CKeywordToken>(key_words.find("<>")->second);
 			++ch_num;
 		}
 		else {
-			token = std::make_unique<CKeywordToken>(EKeyWords::COP_LT);
+			token = std::make_unique<CKeywordToken>(key_words.find("<")->second);
 		}
 	}
 	else if (line[ch_num] == '>') {
 		++ch_num;
 		if (ch_num < line.length() && line[ch_num] == '=') {
-			token = std::make_unique<CKeywordToken>(EKeyWords::COP_GE);
+			token = std::make_unique<CKeywordToken>(key_words.find(">=")->second);
 			++ch_num;
 		}
 		else {
-			token = std::make_unique<CKeywordToken>(EKeyWords::COP_GT);
+			token = std::make_unique<CKeywordToken>(key_words.find(">")->second);
 		}
 	}
 	else if (line[ch_num] == '/') {
 		++ch_num;
-		token = std::make_unique<CKeywordToken>(EKeyWords::AOP_DIV);
+		token = std::make_unique<CKeywordToken>(key_words.find("/")->second);
 	}
 	else if (line[ch_num] == ';') {
-		token = std::make_unique<CKeywordToken>(EKeyWords::END_OF_STATEMENT);
+		token = std::make_unique<CKeywordToken>(key_words.find(";")->second);
 		++ch_num;
 	}
 	else if (line[ch_num] == '+') {
-		token = std::make_unique<CKeywordToken>(EKeyWords::AOP_SUM);
+		token = std::make_unique<CKeywordToken>(key_words.find("+")->second);
 		++ch_num;
 	}
 	else if (line[ch_num] == '-') {
-		token = std::make_unique<CKeywordToken>(EKeyWords::AOP_SUB);
+		token = std::make_unique<CKeywordToken>(key_words.find("-")->second);
 		++ch_num;
 	}
 	else if (line[ch_num] == '*') {
-		token = std::make_unique<CKeywordToken>(EKeyWords::AOP_MULT);
+		token = std::make_unique<CKeywordToken>(key_words.find("*")->second);
 		++ch_num;
 	}
 	else if (line[ch_num] == '(') {
 		++ch_num;
-		token = std::make_unique<CKeywordToken>(EKeyWords::OPENING_BRACKET);
+		token = std::make_unique<CKeywordToken>(key_words.find("(")->second);
 	}
 	else if (line[ch_num] == ')') {
 		++ch_num;
-		token = std::make_unique<CKeywordToken>(EKeyWords::CLOSING_BRACKET);
+		
+		token = std::make_unique<CKeywordToken>(key_words.find(")")->second);
 	}
 	else if (line[ch_num] == '\'') {
 		int start = ch_num + 1;
@@ -129,7 +130,19 @@ CTokenPtr CLexer::GetNextToken()
 		}
 	}
 	else if (IsLetter(line[ch_num])) {
-		token = ProccessingWord();
+		std::string word = GetWord();
+		if (word == "True") {
+			token = std::make_unique<CConstToken>(true);
+		}
+		else if (word == "False") {
+			token = std::make_unique<CConstToken>(false);
+		}
+		else {
+			token = ProcessingKeyWord(word);
+			if (token == nullptr) {
+				token = std::make_unique<CIdentToken>(word);
+			}
+		}
 	}
 	return token;
 }
@@ -226,70 +239,11 @@ bool CLexer::SkipComments() {
 	return success;
 }
 
-CTokenPtr CLexer::ProccessingWord() {
-	CTokenPtr token;
-	std::string word = GetWord();
-	if (word == "var") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::VAR);
-	}
-	else if (word == "type") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::TYPE);
-	}
-	else if (word == "begin") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::BEGIN);
-	}
-	else if (word == "end") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::END);
-	}
-	else if (word == "if") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::IF);
-	}
-	else if (word == "then") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::THEN);
-	}
-	else if (word == "else") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::ELSE);
-	}
-	else if (word == "while") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::WHILE);
-	}
-	else if (word == "do") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::DO);
-	}
-	// Логические операции
-	else if (word == "and") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::LOP_AND);
-	}
-	else if (word == "or") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::LOP_OR);
-	}
-	else if (word == "xor") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::LOP_XOR);
-	}
-	else if (word == "not") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::LOP_NOT);
-	}
-	else if (word == "True") {
-		token = std::make_unique<CConstToken>(true);
-	}
-	else if (word == "False") {
-		token = std::make_unique<CConstToken>(false);
-	}
-	// Типы данных
-	else if (word == "integer") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::INTEGER);
-	}
-	else if (word == "real") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::REAL);
-	}
-	else if (word == "boolean") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::BOOLEAN);
-	}
-	else if (word == "string") {
-		token = std::make_unique<CKeywordToken>(EKeyWords::STRING);
-	}
-	else {
-		token = std::make_unique<CIdentToken>(word);
+CTokenPtr CLexer::ProcessingKeyWord(const std::string &word) {
+	CTokenPtr token = nullptr;
+	std::map<std::string, EKeyWords>::const_iterator type = key_words.find(word);
+	if (type != key_words.end()) {
+		token = std::make_unique<CKeywordToken>(type->second);
 	}
 	return token;
 }

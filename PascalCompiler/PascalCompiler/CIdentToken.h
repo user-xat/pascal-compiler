@@ -7,9 +7,9 @@
 class CIdentToken : public CToken
 {
 private:
-	std::string name;
+	std::string identifier;
 public:
-	CIdentToken(std::string name);
+	CIdentToken(std::string identifier);
 	std::string ToString() override;
 };
 

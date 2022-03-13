@@ -14,6 +14,4 @@ public:
 	std::string ToString() override;
 };
 
-typedef std::unique_ptr<CBooleanVariant> CBooleanVariantPtr;
-
 #endif // !_CBOOLEAN_VARIANT_H_
