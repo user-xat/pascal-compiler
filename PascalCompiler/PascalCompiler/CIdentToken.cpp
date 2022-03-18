@@ -7,5 +7,5 @@ CIdentToken::CIdentToken(std::string identifier) : CToken(ETokenType::IDENT)
 
 std::string CIdentToken::ToString()
 {
-	return identifier;
+	return "IDENT:\t" + identifier;
 }

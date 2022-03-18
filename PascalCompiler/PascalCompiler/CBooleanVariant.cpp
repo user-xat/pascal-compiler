@@ -12,7 +12,7 @@ bool CBooleanVariant::GetValue()
 
 std::string CBooleanVariant::ToString()
 {
-	std::string result("BOOLEAN: ");
+	std::string result("CONST:\tboolean: ");
 	if (this->value)
 		result += "True";
 	else

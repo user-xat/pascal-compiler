@@ -43,6 +43,7 @@ enum class EKeyWords
 	CLOSING_BRACKET,
 	SINGLE_QUOTE,
 	COMMA,
+	DOT,
 	// individual 
 	FUNCTION,
 	FOR,

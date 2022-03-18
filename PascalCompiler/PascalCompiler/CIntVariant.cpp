@@ -12,5 +12,5 @@ int CIntVariant::GetValue()
 
 std::string CIntVariant::ToString()
 {
-	return std::string("INTEGER: " + std::to_string(this->value));
+	return std::string("CONST:\tinteger: " + std::to_string(this->value));
 }

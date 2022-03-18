@@ -24,7 +24,11 @@ CTokenPtr CLexer::GetNextToken()
 		return nullptr;
 	}
 	// »щем токен
-	if (line[ch_num] == ',') {
+	if (line[ch_num] == '.') {
+		token = std::make_unique<CKeywordToken>(key_words.find(".")->second);
+		++ch_num;
+	}
+	else if (line[ch_num] == ',') {
 		token = std::make_unique<CKeywordToken>(key_words.find(",")->second);
 		++ch_num;
 	}
@@ -144,6 +148,7 @@ CTokenPtr CLexer::GetNextToken()
 			}
 		}
 	}
+
 	return token;
 }
 

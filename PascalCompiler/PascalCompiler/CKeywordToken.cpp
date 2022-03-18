@@ -12,129 +12,132 @@ EKeyWords CKeywordToken::GetKeyword()
 
 std::string CKeywordToken::ToString()
 {
-	std::string result;
+	std::string result("KEYWORD:\t");
 
 	switch (keyword)
 	{
 	case EKeyWords::INTEGER:
-		result = "integer";
+		result += "integer";
 		break;
 	case EKeyWords::REAL:
-		result = "real";
+		result += "real";
 		break;
 	case EKeyWords::STRING:
-		result = "string";
+		result += "string";
 		break;
 	case EKeyWords::BOOLEAN:
-		result = "boolean";
+		result += "boolean";
 		break;
 	case EKeyWords::AOP_ASSIGN:
-		result = ":=";
+		result += ":=";
 		break;
 	case EKeyWords::AOP_SUM:
-		result = "+";
+		result += "+";
 		break;
 	case EKeyWords::AOP_SUB:
-		result = "-";
+		result += "-";
 		break;
 	case EKeyWords::AOP_MULT:
-		result = "*";
+		result += "*";
 		break;
 	case EKeyWords::AOP_DIV:
-		result = "/";
+		result += "/";
 		break;
 	case EKeyWords::LOP_AND:
-		result = "and";
+		result += "and";
 		break;
 	case EKeyWords::LOP_OR:
-		result = "or";
+		result += "or";
 		break;
 	case EKeyWords::LOP_NOT:
-		result = "not";
+		result += "not";
 		break;
 	case EKeyWords::LOP_XOR:
-		result = "xor";
+		result += "xor";
 		break;
 	case EKeyWords::COP_LT:
-		result = "<";
+		result += "<";
 		break;
 	case EKeyWords::COP_LE:
-		result = "<=";
+		result += "<=";
 		break;
 	case EKeyWords::COP_GT:
-		result = ">";
+		result += ">";
 		break;
 	case EKeyWords::COP_GE:
-		result = ">=";
+		result += ">=";
 		break;
 	case EKeyWords::COP_EQ:
-		result = "=";
+		result += "=";
 		break;
 	case EKeyWords::COP_NE:
-		result = "<>";
+		result += "<>";
 		break;
 	case EKeyWords::END_OF_STATEMENT:
-		result = ";";
+		result += ";";
 		break;
 	case EKeyWords::BEGIN:
-		result = "begin";
+		result += "begin";
 		break;
 	case EKeyWords::END:
-		result = "end";
+		result += "end";
 		break;
 	case EKeyWords::VAR:
-		result = "var";
+		result += "var";
 		break;
 	case EKeyWords::TYPE:
-		result = "type";
+		result += "type";
 		break;
 	case EKeyWords::IF:
-		result = "if";
+		result += "if";
 		break;
 	case EKeyWords::THEN:
-		result = "then";
+		result += "then";
 		break;
 	case EKeyWords::ELSE:
-		result = "else";
+		result += "else";
 		break;
 	case EKeyWords::WHILE:
-		result = "while";
+		result += "while";
 		break;
 	case EKeyWords::DO:
-		result = "do";
+		result += "do";
 		break;
 	case EKeyWords::COLON:
-		result = ":";
+		result += ":";
 		break;
 	case EKeyWords::OPENING_BRACKET:
-		result = "(";
+		result += "(";
 		break;
 	case EKeyWords::CLOSING_BRACKET:
-		result = ")";
+		result += ")";
 		break;
 	case EKeyWords::SINGLE_QUOTE:
-		result = "'";
+		result += "'";
 		break;
 	case EKeyWords::COMMA:
-		result = ",";
+		result += ",";
+		break;
+	case EKeyWords::DOT:
+		result += ".";
 		break;
 	case EKeyWords::FUNCTION:
-		result = "function";
+		result += "function";
 		break;
 	case EKeyWords::FOR:
-		result = "for";
+		result += "for";
 		break;
 	case EKeyWords::TO:
-		result = "to";
+		result += "to";
 		break;
 	case EKeyWords::DOWNTO:
-		result = "downto";
+		result += "downto";
 		break;
 	case EKeyWords::REPEAT:
-		result = "repeat";
+		result += "repeat";
 		break;
 	case EKeyWords::UNTIL:
-		result = "until";
+		result += "until";
 		break;
 	default:
 		result = "[ERROR] Unknown keyword!";

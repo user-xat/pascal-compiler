@@ -66,6 +66,7 @@ private:
 		{")", EKeyWords::CLOSING_BRACKET},
 		{"'", EKeyWords::SINGLE_QUOTE},
 		{",", EKeyWords::COMMA},
+		{".", EKeyWords::DOT},
 		{"function", EKeyWords::FUNCTION},
 		{"for", EKeyWords::FOR},
 		{"to", EKeyWords::TO},
