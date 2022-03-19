@@ -51,8 +51,8 @@
     <ClCompile Include="CIOFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CExpresson.cpp">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="CParser.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,7 +98,7 @@
     <ClInclude Include="CIOFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CExpression.h">
+    <ClInclude Include="CParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

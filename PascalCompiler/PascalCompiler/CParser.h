@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CEXPRESSION_H
-#define CEXPRESSION_H
+#ifndef CPARSER_H
+#define CPARSER_H
 
 #include "CLexer.h"
 
@@ -46,5 +46,5 @@ private:
 	void ActualParameter();
 };
 
-#endif // !CEXPRESSION_H
+#endif // !CPARSER_H
 
