@@ -17,6 +17,7 @@ public:
 	CConstToken(double value);
 	CConstToken(std::string value);
 	CConstToken(bool value);
+	CVariant* GetVariant();
 	std::string ToString() override;
 };
 

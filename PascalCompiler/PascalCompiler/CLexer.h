@@ -51,6 +51,7 @@ private:
 		{">=", EKeyWords::COP_GE},
 		{"=", EKeyWords::COP_EQ},
 		{"<>", EKeyWords::COP_NE},
+		{"program", EKeyWords::PROGRAM},
 		{";", EKeyWords::END_OF_STATEMENT},
 		{"begin", EKeyWords::BEGIN},
 		{"end", EKeyWords::END},
@@ -83,5 +84,7 @@ bool CLexer::IsNumber(std::string num, T& value) {
 	ss >> value;
 	return !ss.fail();
 }
+
+using CLexerPtr = std::unique_ptr<CLexer>;
 
 #endif // !_CLEXER_H_

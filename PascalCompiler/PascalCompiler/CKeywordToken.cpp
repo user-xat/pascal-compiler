@@ -73,6 +73,9 @@ std::string CKeywordToken::ToString()
 	case EKeyWords::COP_NE:
 		result += "<>";
 		break;
+	case EKeyWords::PROGRAM:
+		result += "program";
+		break;
 	case EKeyWords::END_OF_STATEMENT:
 		result += ";";
 		break;

@@ -1,3 +1,4 @@
+program myprog;
 var x,y,z:real;
   a:integer;
   b:integer;

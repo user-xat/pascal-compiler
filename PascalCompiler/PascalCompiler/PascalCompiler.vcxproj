@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="CBooleanVariant.cpp" />
     <ClCompile Include="CConstToken.cpp" />
+    <ClCompile Include="CExpresson.cpp" />
     <ClCompile Include="CIdentToken.cpp" />
     <ClCompile Include="CIntVariant.cpp" />
     <ClCompile Include="CIOFile.cpp" />
@@ -155,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="CBooleanVariant.h" />
     <ClInclude Include="CConstToken.h" />
+    <ClInclude Include="CExpression.h" />
     <ClInclude Include="CIdentToken.h" />
     <ClInclude Include="CIntVariant.h" />
     <ClInclude Include="CIOFile.h" />

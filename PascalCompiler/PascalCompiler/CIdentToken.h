@@ -10,6 +10,7 @@ private:
 	std::string identifier;
 public:
 	CIdentToken(std::string identifier);
+	std::string GetIdentifier();
 	std::string ToString() override;
 };
 

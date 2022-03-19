@@ -20,6 +20,11 @@ CConstToken::CConstToken(bool value) : CToken(ETokenType::CONST)
 	this->variant = std::make_unique<CBooleanVariant>(value);
 }
 
+CVariant* CConstToken::GetVariant()
+{
+	return variant.get();
+}
+
 std::string CConstToken::ToString()
 {
 	return variant->ToString();

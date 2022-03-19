@@ -28,6 +28,7 @@ enum class EKeyWords
 	COP_EQ,
 	COP_NE,
 	// rest keywords
+	PROGRAM,
 	END_OF_STATEMENT,
 	BEGIN,
 	END,
