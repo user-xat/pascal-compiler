@@ -7,7 +7,7 @@
 class CIntVariant : public CVariant
 {
 private:
-	int value;
+	int m_value;
 public:
 	CIntVariant(int value);
 	int GetValue();

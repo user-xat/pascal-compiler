@@ -2,15 +2,15 @@
 
 CLexer::CLexer(const std::string &path_to_file)
 {
-	this->file = std::make_unique<CIOFile>(path_to_file);
-	this->ch_num = 0;
+	this->m_file = std::make_unique<CIOFile>(path_to_file);
+	this->m_ch_num = 0;
 }
 
 CTokenPtr CLexer::GetNextToken()
 {
 	CTokenPtr token = nullptr;
 	// Получение новой строки
-	while (line.empty() || ch_num >= line.size()) {
+	while (m_line.empty() || m_ch_num >= m_line.size()) {
 		if (!GetNewLine()) {
 			return nullptr;
 		}
@@ -24,95 +24,96 @@ CTokenPtr CLexer::GetNextToken()
 		return nullptr;
 	}
 	// Ищем токен
-	if (line[ch_num] == '.') {
+	if (m_line[m_ch_num] == '.') {
 		token = std::make_unique<CKeywordToken>(key_words.find(".")->second);
-		++ch_num;
+		++m_ch_num;
 	}
-	else if (line[ch_num] == ',') {
+	else if (m_line[m_ch_num] == ',') {
 		token = std::make_unique<CKeywordToken>(key_words.find(",")->second);
-		++ch_num;
+		++m_ch_num;
 	}
-	else if (line[ch_num] == '=') {
+	else if (m_line[m_ch_num] == '=') {
 		token = std::make_unique<CKeywordToken>(key_words.find("=")->second);
-		++ch_num;
+		++m_ch_num;
 	}
-	else if (line[ch_num] == ':') {
-		++ch_num;
-		if (ch_num < line.length() && line[ch_num] == '=') {
+	else if (m_line[m_ch_num] == ':') {
+		++m_ch_num;
+		if (m_ch_num < m_line.length() && m_line[m_ch_num] == '=') {
 			token = std::make_unique<CKeywordToken>(key_words.find(":=")->second);
-			++ch_num;
+			++m_ch_num;
 		}
 		else {
 			token = std::make_unique<CKeywordToken>(key_words.find(":")->second);
 		}
 	}
-	else if (line[ch_num] == '<') {
-		++ch_num;
-		if (ch_num < line.length() && line[ch_num] == '=') {
+	else if (m_line[m_ch_num] == '<') {
+		++m_ch_num;
+		if (m_ch_num < m_line.length() && m_line[m_ch_num] == '=') {
 			token = std::make_unique<CKeywordToken>(key_words.find("<=")->second);
-			++ch_num;
+			++m_ch_num;
 		}
-		else if (ch_num < line.length() && line[ch_num] == '>') {
+		else if (m_ch_num < m_line.length() && m_line[m_ch_num] == '>') {
 			token = std::make_unique<CKeywordToken>(key_words.find("<>")->second);
-			++ch_num;
+			++m_ch_num;
 		}
 		else {
 			token = std::make_unique<CKeywordToken>(key_words.find("<")->second);
 		}
 	}
-	else if (line[ch_num] == '>') {
-		++ch_num;
-		if (ch_num < line.length() && line[ch_num] == '=') {
+	else if (m_line[m_ch_num] == '>') {
+		++m_ch_num;
+		if (m_ch_num < m_line.length() && m_line[m_ch_num] == '=') {
 			token = std::make_unique<CKeywordToken>(key_words.find(">=")->second);
-			++ch_num;
+			++m_ch_num;
 		}
 		else {
 			token = std::make_unique<CKeywordToken>(key_words.find(">")->second);
 		}
 	}
-	else if (line[ch_num] == '/') {
-		++ch_num;
+	else if (m_line[m_ch_num] == '/') {
+		++m_ch_num;
 		token = std::make_unique<CKeywordToken>(key_words.find("/")->second);
 	}
-	else if (line[ch_num] == ';') {
+	else if (m_line[m_ch_num] == ';') {
 		token = std::make_unique<CKeywordToken>(key_words.find(";")->second);
-		++ch_num;
+		++m_ch_num;
 	}
-	else if (line[ch_num] == '+') {
+	else if (m_line[m_ch_num] == '+') {
 		token = std::make_unique<CKeywordToken>(key_words.find("+")->second);
-		++ch_num;
+		++m_ch_num;
 	}
-	else if (line[ch_num] == '-') {
+	else if (m_line[m_ch_num] == '-') {
 		token = std::make_unique<CKeywordToken>(key_words.find("-")->second);
-		++ch_num;
+		++m_ch_num;
 	}
-	else if (line[ch_num] == '*') {
+	else if (m_line[m_ch_num] == '*') {
 		token = std::make_unique<CKeywordToken>(key_words.find("*")->second);
-		++ch_num;
+		++m_ch_num;
 	}
-	else if (line[ch_num] == '(') {
-		++ch_num;
+	else if (m_line[m_ch_num] == '(') {
+		++m_ch_num;
 		token = std::make_unique<CKeywordToken>(key_words.find("(")->second);
 	}
-	else if (line[ch_num] == ')') {
-		++ch_num;
-		
+	else if (m_line[m_ch_num] == ')') {
+		++m_ch_num;
 		token = std::make_unique<CKeywordToken>(key_words.find(")")->second);
 	}
-	else if (line[ch_num] == '\'') {
-		int start = ch_num + 1;
-		do
-		{
-			++ch_num;
-		} while (ch_num < line.size() && line[ch_num] != '\'');
-		if (ch_num >= line.size()) {
+	else if (m_line[m_ch_num] == '\'') {
+		int start = m_ch_num + 1;
+		do {
+			++m_ch_num;
+		} while (m_ch_num < m_line.size() && m_line[m_ch_num] != '\'');
+		if (m_ch_num >= m_line.size()) {
 			// TODO: Error
+			std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
+			m_file->WriteLine(err_mes);
+			return nullptr;
 		}
-		std::string str = line.substr(start, ch_num - start);
+		std::string str = m_line.substr(start, m_ch_num - start);
 		token = std::make_unique<CConstToken>(str);
-		++ch_num;
+		++m_ch_num;
 	}
-	else if (IsDigit(line[ch_num])) {
+	else if (IsDigit(m_line[m_ch_num])) {
 		std::string num = GetNumber();
 		if (num.find('.') != -1) {
 			double value;
@@ -121,6 +122,9 @@ CTokenPtr CLexer::GetNextToken()
 			}
 			else {
 				// TODO: Ошибка 
+				std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
+				m_file->WriteLine(err_mes);
+				return nullptr;
 			}
 		}
 		else {
@@ -130,10 +134,13 @@ CTokenPtr CLexer::GetNextToken()
 			}
 			else {
 				// TODO: Ошибка 
+				std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
+				m_file->WriteLine(err_mes);
+				return nullptr;
 			}
 		}
 	}
-	else if (IsLetter(line[ch_num])) {
+	else if (IsLetter(m_line[m_ch_num])) {
 		std::string word = GetWord();
 		if (word == "True") {
 			token = std::make_unique<CConstToken>(true);
@@ -165,37 +172,37 @@ bool CLexer::IsWhiteSpace(const char ch) {
 }
 
 std::string CLexer::GetWord() {
-	int ch_beg{ ch_num };
-	while (IsLetter(line[ch_num]) || IsDigit(line[ch_num])) {
-		++ch_num;
+	int ch_beg{ m_ch_num };
+	while (IsLetter(m_line[m_ch_num]) || IsDigit(m_line[m_ch_num])) {
+		++m_ch_num;
 	}
-	return line.substr(ch_beg, ch_num - ch_beg);
+	return m_line.substr(ch_beg, m_ch_num - ch_beg);
 }
 
 std::string CLexer::GetNumber() {
-	int ch_beg{ ch_num };
-	while (IsDigit(line[ch_num]) || line[ch_num] == '.') {
-		++ch_num;
+	int ch_beg{ m_ch_num };
+	while (IsDigit(m_line[m_ch_num]) || m_line[m_ch_num] == '.') {
+		++m_ch_num;
 	}
-	return line.substr(ch_beg, ch_num - ch_beg);
+	return m_line.substr(ch_beg, m_ch_num - ch_beg);
 }
 
 bool CLexer::GetNewLine()
 {
-	bool result = this->file->GetNextLine(this->line);
-	this->ch_num = 0;
+	bool result = this->m_file->GetNextLine(this->m_line);
+	this->m_ch_num = 0;
 	return result;
 }
 
 bool CLexer::SkipSpaces() {
 	bool success{ true };
-	if (ch_num >= line.size()) {
+	if (m_ch_num >= m_line.size()) {
 		success = GetNewLine();
 	}
-	while (success && IsWhiteSpace(line[ch_num]))
+	while (success && IsWhiteSpace(m_line[m_ch_num]))
 	{
-		++ch_num;
-		if (ch_num >= line.size()) {
+		++m_ch_num;
+		if (m_ch_num >= m_line.size()) {
 			success = GetNewLine();
 		}
 	}
@@ -205,40 +212,40 @@ bool CLexer::SkipSpaces() {
 bool CLexer::SkipComments() {
 	bool success{ true };
 	// // comment
-	if (ch_num < line.size() - 1 && line[ch_num] == '/' && line[ch_num + 1] == '/') {
+	if (m_ch_num < m_line.size() - 1 && m_line[m_ch_num] == '/' && m_line[m_ch_num + 1] == '/') {
 		do
 		{
 			success = GetNewLine();
 			success = SkipSpaces();
-		} while (success && ch_num < line.size() - 1 && line[ch_num] == '/' && line[ch_num + 1] == '/');
+		} while (success && m_ch_num < m_line.size() - 1 && m_line[m_ch_num] == '/' && m_line[m_ch_num + 1] == '/');
 	}
 	// { comment }
-	else if (ch_num < line.size() && line[ch_num] == '{') {
-		while (line[ch_num] != '}')
+	else if (m_ch_num < m_line.size() && m_line[m_ch_num] == '{') {
+		while (m_line[m_ch_num] != '}')
 		{
-			++ch_num;
-			if (ch_num >= line.size()) {
+			++m_ch_num;
+			if (m_ch_num >= m_line.size()) {
 				success = GetNewLine();
 			}
 			if (!success) {
 				// TODO: Error
 			}
 		}
-		++ch_num;
+		++m_ch_num;
 	}
 	// (* comment *)
-	else if (ch_num < line.size() - 1 && line[ch_num] == '(' && line[ch_num + 1] == '*') {
+	else if (m_ch_num < m_line.size() - 1 && m_line[m_ch_num] == '(' && m_line[m_ch_num + 1] == '*') {
 		do
 		{
-			++ch_num;
-			if (ch_num >= line.size() - 1) {
+			++m_ch_num;
+			if (m_ch_num >= m_line.size() - 1) {
 				success = GetNewLine();
 			}
 			if (!success) {
 				// TODO: Error
 			}
-		} while (ch_num < line.size() - 1 && !(line[ch_num] == '*' && line[ch_num + 1] == ')'));
-		ch_num += 2;
+		} while (m_ch_num < m_line.size() - 1 && !(m_line[m_ch_num] == '*' && m_line[m_ch_num + 1] == ')'));
+		m_ch_num += 2;
 	}
 	success = SkipSpaces();
 	return success;
@@ -251,4 +258,15 @@ CTokenPtr CLexer::ProcessingKeyWord(const std::string &word) {
 		token = std::make_unique<CKeywordToken>(type->second);
 	}
 	return token;
+}
+
+
+std::string CLexer::GenerateErrorMessage(int line_num)
+{
+	std::string mes;
+	for (int i = 0; i < m_ch_num; ++i) {
+		mes += ' ';
+	}
+	mes += "| Unexpected token on " + std::to_string(line_num) + " line and " + std::to_string(m_ch_num + 1) + " character";
+	return mes;
 }

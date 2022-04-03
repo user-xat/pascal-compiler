@@ -2,10 +2,10 @@
 
 CVariant::CVariant(EVariantType type)
 {
-	this->type = type;
+	this->m_type = type;
 }
 
 EVariantType CVariant::GetType()
 {
-	return this->type;
+	return this->m_type;
 }

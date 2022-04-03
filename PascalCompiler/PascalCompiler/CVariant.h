@@ -9,7 +9,7 @@
 class CVariant
 {
 private:
-	EVariantType type;
+	EVariantType m_type;
 public:
 	CVariant(EVariantType type);
 	EVariantType GetType();

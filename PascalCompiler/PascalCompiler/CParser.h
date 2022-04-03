@@ -6,8 +6,9 @@
 
 class CParser {
 private:
-	CLexerPtr lexer_;
-	CTokenPtr curToken_;
+	CLexerPtr m_lexer;
+	CTokenPtr m_curToken;
+
 public:
 	CParser(const std::string &filepath);
 	void Parse();

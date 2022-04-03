@@ -2,10 +2,10 @@
 
 CToken::CToken(ETokenType type)
 {
-	this->type = type;
+	this->m_type = type;
 }
 
 ETokenType CToken::GetType()
 {
-	return this->type;
+	return this->m_type;
 }

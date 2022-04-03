@@ -7,7 +7,7 @@
 class CBooleanVariant : public CVariant
 {
 private:
-	bool value;
+	bool m_value;
 public:
 	CBooleanVariant(bool value);
 	bool GetValue();

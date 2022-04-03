@@ -13,9 +13,9 @@
 class CLexer
 {
 private:
-	CIOFilePtr file;
-	std::string line;
-	int ch_num;
+	CIOFilePtr m_file;
+	std::string m_line;
+	int m_ch_num;
 public:
 	CLexer(const std::string &path_to_file);
 	CTokenPtr GetNextToken();
@@ -31,6 +31,7 @@ private:
 	bool IsWhiteSpace(const char ch);
 	template<typename T>
 	bool IsNumber(std::string num, T& value);
+	std::string GenerateErrorMessage(int line_num);
 	const std::map<std::string, EKeyWords> key_words = {
 		{"integer", EKeyWords::INTEGER},
 		{"real", EKeyWords::REAL},

@@ -1,7 +1,7 @@
 #include "CParser.h"
 
 CParser::CParser(const std::string &filepath) {
-	lexer_ = std::make_unique<CLexer>(filepath);
+	m_lexer = std::make_unique<CLexer>(filepath);
 }
 
 void CParser::Parse()
@@ -11,13 +11,13 @@ void CParser::Parse()
 }
 
 void CParser::GetNextToken() {
-	curToken_ = lexer_->GetNextToken();
+	m_curToken = m_lexer->GetNextToken();
 }
 
 void CParser::Accept(EKeyWords keyword)
 {
-	if (curToken_ == nullptr || curToken_->GetType() != ETokenType::KEYWORD
-		|| dynamic_cast<CKeywordToken*>(curToken_.get())->GetKeyword() != keyword) {
+	if (m_curToken == nullptr || m_curToken->GetType() != ETokenType::KEYWORD
+		|| dynamic_cast<CKeywordToken*>(m_curToken.get())->GetKeyword() != keyword) {
 			// TODO:
 			// THROW EXCEPTION
 	}
@@ -26,25 +26,25 @@ void CParser::Accept(EKeyWords keyword)
 
 bool CParser::CheckTokenType(ETokenType type)
 {
-	if (curToken_ != nullptr) {
-		return curToken_->GetType() == type;
+	if (m_curToken != nullptr) {
+		return m_curToken->GetType() == type;
 	}
 	return false;
 }
 
 bool CParser::CheckKeyword(EKeyWords keyword)
 {
-	return CheckTokenType(ETokenType::KEYWORD) && dynamic_cast<CKeywordToken*>(curToken_.get())->GetKeyword() == keyword;
+	return CheckTokenType(ETokenType::KEYWORD) && dynamic_cast<CKeywordToken*>(m_curToken.get())->GetKeyword() == keyword;
 }
 
 bool CParser::CheckConstVariant(EVariantType variant)
 {
-	return CheckTokenType(ETokenType::CONST) && dynamic_cast<CConstToken*>(curToken_.get())->GetVariant()->GetType() == variant;
+	return CheckTokenType(ETokenType::CONST) && dynamic_cast<CConstToken*>(m_curToken.get())->GetVariant()->GetType() == variant;
 }
 
 bool CParser::IsType() {
-	if (curToken_ != nullptr && curToken_->GetType() == ETokenType::KEYWORD) {
-		CKeywordToken* token = dynamic_cast<CKeywordToken*>(curToken_.get());
+	if (m_curToken != nullptr && m_curToken->GetType() == ETokenType::KEYWORD) {
+		CKeywordToken* token = dynamic_cast<CKeywordToken*>(m_curToken.get());
 		return token->GetKeyword() == EKeyWords::INTEGER || token->GetKeyword() == EKeyWords::REAL
 			|| token->GetKeyword() == EKeyWords::STRING || token->GetKeyword() == EKeyWords::BOOLEAN;
 	}
@@ -90,7 +90,7 @@ void CParser::TypeSection() {
 // <type definition>::=<name>=<type>
 void CParser::TypeDefinition() {
 	if (CheckTokenType(ETokenType::IDENT)) {
-		std::string typesName = dynamic_cast<CIdentToken*>(curToken_.get())->GetIdentifier();
+		std::string typesName = dynamic_cast<CIdentToken*>(m_curToken.get())->GetIdentifier();
 		GetNextToken();
 		Accept(EKeyWords::COP_EQ);
 		IsType();
@@ -116,7 +116,7 @@ void CParser::DescriptionOfVariables() {
 	do
 	{
 		if (CheckTokenType(ETokenType::IDENT)) {
-			name = dynamic_cast<CIdentToken*>(curToken_.get())->GetIdentifier();
+			name = dynamic_cast<CIdentToken*>(m_curToken.get())->GetIdentifier();
 		}
 		GetNextToken();
 		if (CheckKeyword(EKeyWords::COMMA)) {
@@ -193,7 +193,7 @@ void CParser::ParametersGroup() {
 			// TODO:
 			// THROW EXCEPTION
 		}
-		name = dynamic_cast<CIdentToken*>(curToken_.get())->GetIdentifier();
+		name = dynamic_cast<CIdentToken*>(m_curToken.get())->GetIdentifier();
 		GetNextToken();
 		if (CheckKeyword(EKeyWords::COMMA))
 			GetNextToken();
@@ -251,7 +251,7 @@ void CParser::ConditionOperator() {
 
 // <assignment operator>::=<переменная>:=<выражение> | <имя функции>:=<выражение>
 void CParser::AssignmentOperator() {
-	std::string variable = dynamic_cast<CIdentToken*>(curToken_.get())->GetIdentifier();
+	std::string variable = dynamic_cast<CIdentToken*>(m_curToken.get())->GetIdentifier();
 	GetNextToken();
 	Accept(EKeyWords::AOP_ASSIGN);
 	Expression();
@@ -388,7 +388,7 @@ bool CParser::MultiplicativeOperation() {
 //	(<expression>) | <обозначение функции> | not <factor>
 void CParser::Factor() {
 	if (CheckTokenType(ETokenType::CONST)) {
-		if (dynamic_cast<CConstToken*>(curToken_.get())->GetVariant()->GetType() == EVariantType::BOOLEAN) {
+		if (dynamic_cast<CConstToken*>(m_curToken.get())->GetVariant()->GetType() == EVariantType::BOOLEAN) {
 			// TODO:
 			// THROW EXCEPTION
 		}
@@ -422,7 +422,7 @@ void CParser::Factor() {
 
 // <function notation>::=<function name>|<function name>(<actual parameter>{, <actual parameter>})
 void CParser::FunctionNotation() {
-	std::string function_name = dynamic_cast<CIdentToken*>(curToken_.get())->GetIdentifier();
+	std::string function_name = dynamic_cast<CIdentToken*>(m_curToken.get())->GetIdentifier();
 	GetNextToken();
 	if (CheckKeyword(EKeyWords::OPENING_BRACKET)) {
 		GetNextToken();

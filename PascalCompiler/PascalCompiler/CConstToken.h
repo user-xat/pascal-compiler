@@ -11,7 +11,7 @@
 class CConstToken : public CToken
 {
 private:
-	CVariantPtr variant;
+	CVariantPtr m_variant;
 public:
 	CConstToken(int value);
 	CConstToken(double value);

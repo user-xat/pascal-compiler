@@ -2,19 +2,19 @@
 
 CKeywordToken::CKeywordToken(EKeyWords keyword) : CToken(ETokenType::KEYWORD)
 {
-	this->keyword = keyword;
+	this->m_keyword = keyword;
 }
 
 EKeyWords CKeywordToken::GetKeyword()
 {
-	return this->keyword;
+	return this->m_keyword;
 }
 
 std::string CKeywordToken::ToString()
 {
 	std::string result("KEYWORD:\t");
 
-	switch (keyword)
+	switch (m_keyword)
 	{
 	case EKeyWords::INTEGER:
 		result += "integer";

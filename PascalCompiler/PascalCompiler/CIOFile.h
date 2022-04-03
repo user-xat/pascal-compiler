@@ -10,14 +10,17 @@
 class CIOFile
 {
 private:
-	std::ifstream file;
-	std::string path;
-	int numLine;
+	std::ifstream m_in_file;
+	std::ofstream m_out_file;
+	std::string m_path;
+	int m_numLine;
+
 public:
 	CIOFile(const std::string& path);
 	~CIOFile();
 	bool GetNextLine(std::string& line);
-	int GetNumLine();
+	int GetNumLine() const;
+	CIOFile& WriteLine(const std::string& line);
 };
 
 typedef std::unique_ptr<CIOFile> CIOFilePtr;

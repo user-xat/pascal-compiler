@@ -2,18 +2,18 @@
 
 CBooleanVariant::CBooleanVariant(bool value) : CVariant(EVariantType::BOOLEAN)
 {
-	this->value = value;
+	this->m_value = value;
 }
 
 bool CBooleanVariant::GetValue()
 {
-	return this->value;
+	return this->m_value;
 }
 
 std::string CBooleanVariant::ToString()
 {
 	std::string result("CONST:\tboolean: ");
-	if (this->value)
+	if (this->m_value)
 		result += "True";
 	else
 		result += "False";

@@ -2,15 +2,15 @@
 
 CRealVariant::CRealVariant(double value) : CVariant(EVariantType::REAL)
 {
-	this->value = value;
+	this->m_value = value;
 }
 
 double CRealVariant::GetValue()
 {
-	return this->value;
+	return this->m_value;
 }
 
 std::string CRealVariant::ToString()
 {
-	return std::string("CONST:\treal: " + std::to_string(this->value));
+	return std::string("CONST:\treal: " + std::to_string(this->m_value));
 }

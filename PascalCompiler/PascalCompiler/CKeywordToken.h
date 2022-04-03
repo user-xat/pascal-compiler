@@ -8,7 +8,7 @@
 class CKeywordToken : public CToken
 {
 private:
-	EKeyWords keyword;
+	EKeyWords m_keyword;
 public:
 	CKeywordToken(EKeyWords keyword);
 	EKeyWords GetKeyword();

@@ -7,7 +7,7 @@
 class CIdentToken : public CToken
 {
 private:
-	std::string identifier;
+	std::string m_identifier;
 public:
 	CIdentToken(std::string identifier);
 	std::string GetIdentifier();

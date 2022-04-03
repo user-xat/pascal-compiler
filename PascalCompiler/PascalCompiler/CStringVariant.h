@@ -7,7 +7,7 @@
 class CStringVariant : public CVariant
 {
 private:
-	std::string value;
+	std::string m_value;
 public:
 	CStringVariant(std::string value);
 	std::string GetValue();

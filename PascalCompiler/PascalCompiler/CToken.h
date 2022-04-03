@@ -9,7 +9,7 @@
 class CToken
 {
 private:
-	ETokenType type;
+	ETokenType m_type;
 public:
 	CToken(ETokenType type);
 	ETokenType GetType();

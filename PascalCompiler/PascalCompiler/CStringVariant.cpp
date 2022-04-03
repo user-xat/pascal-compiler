@@ -2,15 +2,15 @@
 
 CStringVariant::CStringVariant(std::string value) : CVariant(EVariantType::STRING)
 {
-	this->value = value;
+	this->m_value = value;
 }
 
 std::string CStringVariant::GetValue()
 {
-	return this->value;
+	return this->m_value;
 }
 
 std::string CStringVariant::ToString()
 {
-	return std::string("CONST:\tstring: " + this->value);
+	return std::string("CONST:\tstring: " + this->m_value);
 }

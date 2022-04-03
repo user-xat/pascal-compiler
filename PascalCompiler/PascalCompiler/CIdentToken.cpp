@@ -2,15 +2,15 @@
 
 CIdentToken::CIdentToken(std::string identifier) : CToken(ETokenType::IDENT)
 {
-	this->identifier = identifier;
+	this->m_identifier = identifier;
 }
 
 std::string CIdentToken::GetIdentifier()
 {
-	return identifier;
+	return m_identifier;
 }
 
 std::string CIdentToken::ToString()
 {
-	return "IDENT:\t" + identifier;
+	return "IDENT:\t" + m_identifier;
 }

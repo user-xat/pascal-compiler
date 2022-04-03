@@ -7,7 +7,7 @@
 class CRealVariant : public CVariant
 {
 private:
-	double value;
+	double m_value;
 public:
 	CRealVariant(double value);
 	double GetValue();

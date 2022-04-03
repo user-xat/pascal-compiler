@@ -1,30 +1,42 @@
 #include "CIOFile.h"
 
 CIOFile::CIOFile(const std::string& path) {
-	this->path = path;
-	numLine = 0;
-	file.open(path);
-	if (!file.is_open())
+	this->m_path = path;
+	m_numLine = 0;
+	m_in_file.open(path);
+	if (!m_in_file.is_open())
 	{
+		// TODO
+	}
+	m_out_file.open("LISTING.txt");
+	if (!m_out_file.is_open()) {
 		// TODO
 	}
 }
 
 CIOFile::~CIOFile() {
-	file.close();
+	m_in_file.close();
+	m_out_file.close();
 }
 
 bool CIOFile::GetNextLine(std::string& line) {
-	if (!file.eof()) {
-		std::getline(file, line);
-		numLine++;
+	if (!m_in_file.eof()) {
+		std::getline(m_in_file, line);
+		m_numLine++;
+		WriteLine(line);
 		return true;
 	}
 	line = "";
 	return false;
 }
 
-int CIOFile::GetNumLine()
+int CIOFile::GetNumLine() const
 {
-	return numLine;
+	return m_numLine;
+}
+
+CIOFile& CIOFile::WriteLine(const std::string& line) 
+{
+	m_out_file << line << std::endl;
+	return *this;
 }
