@@ -12,5 +12,6 @@ double CRealVariant::GetValue()
 
 std::string CRealVariant::ToString()
 {
-	return std::string("CONST:\treal: " + std::to_string(this->m_value));
+	return std::string(std::to_string(this->m_value));
+	//return std::string("CONST:\treal: " + std::to_string(this->m_value));
 }

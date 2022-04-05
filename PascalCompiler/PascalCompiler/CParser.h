@@ -7,18 +7,19 @@
 class CParser {
 private:
 	CLexerPtr m_lexer;
-	CTokenPtr m_curToken;
+	CTokenPtr m_cur_token;
 
 public:
 	CParser(const std::string &filepath);
 	void Parse();
 private:
-	void GetNextToken();
+	bool GetNextToken();
 	void Accept(EKeyWords keyword);
+	void Accept(ETokenType type);
 	bool CheckTokenType(ETokenType type);
 	bool CheckKeyword(EKeyWords keyword);
 	bool CheckConstVariant(EVariantType variant);
-	bool IsType();
+	void Type();
 	void Program();
 	void Block();
 	void TypeSection();
@@ -29,11 +30,12 @@ private:
 	void FunctionHeader();
 	void FormalParametersSection();
 	void ParametersGroup();
-	void CompoundOperator();
-	void Operator();
-	void ConditionOperator();
-	void AssignmentOperator();
-	void LoopOperator();
+	void CompoundStatement();
+	void Statement();
+	void ConditionStatement();
+	void AssignmentStatement();
+	void Variable();
+	void LoopStatement();
 	void LoopWithPrecondition();
 	void LoopWithPostcondition();
 	void LoopWithParameter();

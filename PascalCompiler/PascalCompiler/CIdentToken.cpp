@@ -12,5 +12,6 @@ std::string CIdentToken::GetIdentifier()
 
 std::string CIdentToken::ToString()
 {
-	return "IDENT:\t" + m_identifier;
+	return m_identifier;
+	//return "IDENT:\t" + m_identifier;
 }

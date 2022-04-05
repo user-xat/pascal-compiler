@@ -3,16 +3,17 @@
 #include "CIOFile.h"
 #include "CLexer.h"
 #include "EKeyWords.h"
+#include "CParser.h"
 
 int main()
 {
     using namespace std;
     string path = "medium.txt";
-    CIOFile io_module(path);
-    string line;
-    while (io_module.GetNextLine(line)) {
-        std::cout << line << std::endl;
-    }
+    //CIOFile io_module(path);
+    //string line;
+    //while (io_module.GetNextLine(line)) {
+    //    std::cout << line << std::endl;
+    //}
     
     /*CLexer lexer(path);
     CTokenPtr token;
@@ -25,6 +26,9 @@ int main()
         if (token != nullptr)
             cout << i << ": " << token->ToString() << "\n";
     } while (token != nullptr);*/
+
+    CParser parser(path);
+    parser.Parse();
 
     return 0;
 }

@@ -15,10 +15,13 @@ class CLexer
 private:
 	CIOFilePtr m_file;
 	std::string m_line;
-	int m_ch_num;
+	int m_cur_sym;
+	int m_start_token;
 public:
 	CLexer(const std::string &path_to_file);
 	CTokenPtr GetNextToken();
+	void ThrowError(const std::string& error);
+
 private:
 	std::string GetWord();
 	std::string GetNumber();
@@ -53,7 +56,7 @@ private:
 		{"=", EKeyWords::COP_EQ},
 		{"<>", EKeyWords::COP_NE},
 		{"program", EKeyWords::PROGRAM},
-		{";", EKeyWords::END_OF_STATEMENT},
+		{";", EKeyWords::SEMICOLON},
 		{"begin", EKeyWords::BEGIN},
 		{"end", EKeyWords::END},
 		{"var", EKeyWords::VAR},

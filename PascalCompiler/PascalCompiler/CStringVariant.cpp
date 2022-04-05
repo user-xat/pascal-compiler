@@ -12,5 +12,6 @@ std::string CStringVariant::GetValue()
 
 std::string CStringVariant::ToString()
 {
-	return std::string("CONST:\tstring: " + this->m_value);
+	return std::string(this->m_value);
+	//return std::string("CONST:\tstring: " + this->m_value);
 }

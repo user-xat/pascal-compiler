@@ -12,7 +12,8 @@ EKeyWords CKeywordToken::GetKeyword()
 
 std::string CKeywordToken::ToString()
 {
-	std::string result("KEYWORD:\t");
+	//std::string result("KEYWORD:\t");
+	std::string result("");
 
 	switch (m_keyword)
 	{
@@ -76,7 +77,7 @@ std::string CKeywordToken::ToString()
 	case EKeyWords::PROGRAM:
 		result += "program";
 		break;
-	case EKeyWords::END_OF_STATEMENT:
+	case EKeyWords::SEMICOLON:
 		result += ";";
 		break;
 	case EKeyWords::BEGIN:

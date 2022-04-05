@@ -29,7 +29,7 @@ enum class EKeyWords
 	COP_NE,
 	// rest keywords
 	PROGRAM,
-	END_OF_STATEMENT,
+	SEMICOLON,
 	BEGIN,
 	END,
 	VAR,
