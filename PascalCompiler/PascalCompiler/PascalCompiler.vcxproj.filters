@@ -54,6 +54,9 @@
     <ClCompile Include="CParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ETokenType.h">
@@ -99,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

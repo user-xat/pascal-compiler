@@ -3,6 +3,8 @@
 #define CPARSER_H
 
 #include "CLexer.h"
+#include "CSet.h"
+#include <set>
 
 class CParser {
 private:
@@ -16,36 +18,41 @@ private:
 	bool GetNextToken();
 	void Accept(EKeyWords keyword);
 	void Accept(ETokenType type);
-	bool CheckTokenType(ETokenType type);
-	bool CheckKeyword(EKeyWords keyword);
-	bool CheckConstVariant(EVariantType variant);
+	bool CheckTokenType(ETokenType type) const;
+	bool CheckKeyword(EKeyWords keyword) const;
+	bool CheckConstVariant(EVariantType variant) const;
 	void Type();
+	bool Contains(const CSet& set) const;
+	bool Contains(const std::set<ETokenType>& set) const;
+	void BeginSkipErr(const CSet& starts, const CSet& followers);
+	void BeginSkipErr(const std::set<ETokenType>& starts, const CSet& followers);
+	void EndSkipErr(const CSet& followers);
 	void Program();
-	void Block();
-	void TypeSection();
-	void TypeDefinition();
-	void VariableSection();
-	void DescriptionOfVariables();
-	void FunctionSection();
-	void FunctionHeader();
-	void FormalParametersSection();
-	void ParametersGroup();
-	void CompoundStatement();
-	void Statement();
-	void ConditionStatement();
-	void AssignmentStatement();
-	void Variable();
-	void LoopStatement();
-	void LoopWithPrecondition();
-	void LoopWithPostcondition();
-	void LoopWithParameter();
-	void Expression();
-	bool RelationOperation();
-	void SimpleExpression();
-	void Term();
-	bool MultiplicativeOperation();
-	void Factor();
-	void FunctionNotation();
+	void Block(const CSet& followers);
+	void TypeSection(const CSet& followers);
+	void TypeDefinition(const CSet& followers);
+	void VariableSection(const CSet& followers);
+	void DescriptionOfVariables(const CSet& followers);
+	void FunctionSection(const CSet& followers);
+	void FunctionHeader(const CSet& followers);
+	void FormalParametersSection(const CSet& followers);
+	void ParametersGroup(const CSet& followers);
+	void CompoundStatement(const CSet& followers);
+	void Statement(const CSet& followers);
+	void ConditionStatement(const CSet& followers);
+	void AssignmentStatement(const CSet& followers);
+	void Variable(const CSet& followers);
+	void LoopStatement(const CSet& followers);
+	void LoopWithPrecondition(const CSet& followers);
+	void LoopWithPostcondition(const CSet& followers);
+	void LoopWithParameter(const CSet& followers);
+	void Expression(const CSet& followers);
+	bool RelationOperation(const CSet& followers);
+	void SimpleExpression(const CSet& followers);
+	void Term(const CSet& followers);
+	bool MultiplicativeOperation(const CSet& followers);
+	void Factor(const CSet& followers);
+	void FunctionNotation(const CSet& followers);
 	void ActualParameter();
 };
 
