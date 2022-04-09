@@ -4,15 +4,15 @@
 
 #include <string>
 #include <memory>
-#include "EVariantType.h"
+#include "ESymbol.h"
 
 class CVariant
 {
 private:
-	EVariantType m_type;
+	ESymbol m_type;
 public:
-	CVariant(EVariantType type);
-	EVariantType GetType();
+	CVariant(ESymbol type);
+	ESymbol GetType();
 	virtual std::string ToString() = 0;
 };
 

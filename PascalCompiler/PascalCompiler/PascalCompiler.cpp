@@ -15,7 +15,7 @@ int main()
     //    std::cout << line << std::endl;
     //}
     
-    /*CLexer lexer(path);
+    CLexer lexer(path);
     CTokenPtr token;
     int i = 0;
     do
@@ -25,10 +25,10 @@ int main()
         token = lexer.GetNextToken();
         if (token != nullptr)
             cout << i << ": " << token->ToString() << "\n";
-    } while (token != nullptr);*/
+    } while (token != nullptr);
 
-    CParser parser(path);
-    parser.Parse();
+    /*CParser parser(path);
+    parser.Parse();*/
 
     return 0;
 }

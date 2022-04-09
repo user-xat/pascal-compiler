@@ -1,6 +1,6 @@
 #include "CBooleanVariant.h"
 
-CBooleanVariant::CBooleanVariant(bool value) : CVariant(EVariantType::BOOLEAN)
+CBooleanVariant::CBooleanVariant(bool value) : CVariant(ESymbol::BOOLEAN_VARIANT)
 {
 	this->m_value = value;
 }

@@ -3,15 +3,15 @@
 #define CKEYWORD_TOKEN_H
 
 #include "CToken.h"
-#include "EKeyWords.h"
+#include "ESymbol.h"
 
 class CKeywordToken : public CToken
 {
 private:
-	EKeyWords m_keyword;
+	ESymbol m_keyword;
 public:
-	CKeywordToken(EKeyWords keyword);
-	EKeyWords GetKeyword();
+	CKeywordToken(ESymbol keyword);
+	ESymbol GetKeyword();
 	std::string ToString() override;
 };
 

@@ -1,6 +1,6 @@
 #include "CIdentToken.h"
 
-CIdentToken::CIdentToken(std::string identifier) : CToken(ETokenType::IDENT)
+CIdentToken::CIdentToken(std::string identifier) : CToken(ESymbol::IDENT_TOKEN)
 {
 	this->m_identifier = identifier;
 }
@@ -12,6 +12,6 @@ std::string CIdentToken::GetIdentifier()
 
 std::string CIdentToken::ToString()
 {
-	return m_identifier;
-	//return "IDENT:\t" + m_identifier;
+	//return m_identifier;
+	return "IDENT:\t" + m_identifier;
 }

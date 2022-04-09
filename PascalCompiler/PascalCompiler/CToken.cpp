@@ -1,11 +1,11 @@
 #include "CToken.h"
 
-CToken::CToken(ETokenType type)
+CToken::CToken(ESymbol type)
 {
 	this->m_type = type;
 }
 
-ETokenType CToken::GetType()
+ESymbol CToken::GetType()
 {
 	return this->m_type;
 }

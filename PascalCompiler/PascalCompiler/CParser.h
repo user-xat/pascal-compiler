@@ -16,16 +16,15 @@ public:
 	void Parse();
 private:
 	bool GetNextToken();
-	void Accept(EKeyWords keyword);
-	void Accept(ETokenType type);
-	bool CheckTokenType(ETokenType type) const;
-	bool CheckKeyword(EKeyWords keyword) const;
-	bool CheckConstVariant(EVariantType variant) const;
+	void Accept(ESymbol symbol);
+	bool CheckTokenType(ESymbol type) const;
+	bool CheckKeyword(ESymbol keyword) const;
+	bool CheckConstVariant(ESymbol variant) const;
 	void Type();
 	bool Contains(const CSet& set) const;
-	bool Contains(const std::set<ETokenType>& set) const;
+	bool Contains(const std::set<ESymbol>& set) const;
 	void BeginSkipErr(const CSet& starts, const CSet& followers);
-	void BeginSkipErr(const std::set<ETokenType>& starts, const CSet& followers);
+	void BeginSkipErr(const std::set<ESymbol>& starts, const CSet& followers);
 	void EndSkipErr(const CSet& followers);
 	void Program();
 	void Block(const CSet& followers);

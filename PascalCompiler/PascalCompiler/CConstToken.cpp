@@ -1,21 +1,21 @@
 #include "CConstToken.h"
 
-CConstToken::CConstToken(int value) : CToken(ETokenType::CONST)
+CConstToken::CConstToken(int value) : CToken(ESymbol::CONST_TOKEN)
 {
 	this->m_variant = std::make_unique<CIntVariant>(value);
 }
 
-CConstToken::CConstToken(double value) : CToken(ETokenType::CONST)
+CConstToken::CConstToken(double value) : CToken(ESymbol::CONST_TOKEN)
 {
 	this->m_variant = std::make_unique<CRealVariant>(value);
 }
 
-CConstToken::CConstToken(std::string value) : CToken(ETokenType::CONST)
+CConstToken::CConstToken(std::string value) : CToken(ESymbol::CONST_TOKEN)
 {
 	this->m_variant = std::make_unique<CStringVariant>(value);
 }
 
-CConstToken::CConstToken(bool value) : CToken(ETokenType::CONST)
+CConstToken::CConstToken(bool value) : CToken(ESymbol::CONST_TOKEN)
 {
 	this->m_variant = std::make_unique<CBooleanVariant>(value);
 }

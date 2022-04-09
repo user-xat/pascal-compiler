@@ -1,146 +1,146 @@
 #include "CKeywordToken.h"
 
-CKeywordToken::CKeywordToken(EKeyWords keyword) : CToken(ETokenType::KEYWORD)
+CKeywordToken::CKeywordToken(ESymbol keyword) : CToken(ESymbol::KEYWORD_TOKEN)
 {
 	this->m_keyword = keyword;
 }
 
-EKeyWords CKeywordToken::GetKeyword()
+ESymbol CKeywordToken::GetKeyword()
 {
 	return this->m_keyword;
 }
 
 std::string CKeywordToken::ToString()
 {
-	//std::string result("KEYWORD:\t");
-	std::string result("");
+	std::string result("KEYWORD:\t");
+	//std::string result("");
 
 	switch (m_keyword)
 	{
-	case EKeyWords::INTEGER:
+	case ESymbol::INTEGER_KEYWORD:
 		result += "integer";
 		break;
-	case EKeyWords::REAL:
+	case ESymbol::REAL_KEYWORD:
 		result += "real";
 		break;
-	case EKeyWords::STRING:
+	case ESymbol::STRING_KEYWORD:
 		result += "string";
 		break;
-	case EKeyWords::BOOLEAN:
+	case ESymbol::BOOLEAN_KEYWORD:
 		result += "boolean";
 		break;
-	case EKeyWords::AOP_ASSIGN:
+	case ESymbol::AOP_ASSIGN_KEYWORD:
 		result += ":=";
 		break;
-	case EKeyWords::AOP_SUM:
+	case ESymbol::AOP_SUM_KEYWORD:
 		result += "+";
 		break;
-	case EKeyWords::AOP_SUB:
+	case ESymbol::AOP_SUB_KEYWORD:
 		result += "-";
 		break;
-	case EKeyWords::AOP_MULT:
+	case ESymbol::AOP_MULT_KEYWORD:
 		result += "*";
 		break;
-	case EKeyWords::AOP_DIV:
+	case ESymbol::AOP_DIV_KEYWORD:
 		result += "/";
 		break;
-	case EKeyWords::LOP_AND:
+	case ESymbol::LOP_AND_KEYWORD:
 		result += "and";
 		break;
-	case EKeyWords::LOP_OR:
+	case ESymbol::LOP_OR_KEYWORD:
 		result += "or";
 		break;
-	case EKeyWords::LOP_NOT:
+	case ESymbol::LOP_NOT_KEYWORD:
 		result += "not";
 		break;
-	case EKeyWords::LOP_XOR:
+	case ESymbol::LOP_XOR_KEYWORD:
 		result += "xor";
 		break;
-	case EKeyWords::COP_LT:
+	case ESymbol::COP_LT_KEYWORD:
 		result += "<";
 		break;
-	case EKeyWords::COP_LE:
+	case ESymbol::COP_LE_KEYWORD:
 		result += "<=";
 		break;
-	case EKeyWords::COP_GT:
+	case ESymbol::COP_GT_KEYWORD:
 		result += ">";
 		break;
-	case EKeyWords::COP_GE:
+	case ESymbol::COP_GE_KEYWORD:
 		result += ">=";
 		break;
-	case EKeyWords::COP_EQ:
+	case ESymbol::COP_EQ_KEYWORD:
 		result += "=";
 		break;
-	case EKeyWords::COP_NE:
+	case ESymbol::COP_NE_KEYWORD:
 		result += "<>";
 		break;
-	case EKeyWords::PROGRAM:
+	case ESymbol::PROGRAM_KEYWORD:
 		result += "program";
 		break;
-	case EKeyWords::SEMICOLON:
+	case ESymbol::SEMICOLON_KEYWORD:
 		result += ";";
 		break;
-	case EKeyWords::BEGIN:
+	case ESymbol::BEGIN_KEYWORD:
 		result += "begin";
 		break;
-	case EKeyWords::END:
+	case ESymbol::END_KEYWORD:
 		result += "end";
 		break;
-	case EKeyWords::VAR:
+	case ESymbol::VAR_KEYWORD:
 		result += "var";
 		break;
-	case EKeyWords::TYPE:
+	case ESymbol::TYPE_KEYWORD:
 		result += "type";
 		break;
-	case EKeyWords::IF:
+	case ESymbol::IF_KEYWORD:
 		result += "if";
 		break;
-	case EKeyWords::THEN:
+	case ESymbol::THEN_KEYWORD:
 		result += "then";
 		break;
-	case EKeyWords::ELSE:
+	case ESymbol::ELSE_KEYWORD:
 		result += "else";
 		break;
-	case EKeyWords::WHILE:
+	case ESymbol::WHILE_KEYWORD:
 		result += "while";
 		break;
-	case EKeyWords::DO:
+	case ESymbol::DO_KEYWORD:
 		result += "do";
 		break;
-	case EKeyWords::COLON:
+	case ESymbol::COLON_KEYWORD:
 		result += ":";
 		break;
-	case EKeyWords::OPENING_BRACKET:
+	case ESymbol::OPENING_BRACKET_KEYWORD:
 		result += "(";
 		break;
-	case EKeyWords::CLOSING_BRACKET:
+	case ESymbol::CLOSING_BRACKET_KEYWORD:
 		result += ")";
 		break;
-	case EKeyWords::SINGLE_QUOTE:
+	case ESymbol::SINGLE_QUOTE_KEYWORD:
 		result += "'";
 		break;
-	case EKeyWords::COMMA:
+	case ESymbol::COMMA_KEYWORD:
 		result += ",";
 		break;
-	case EKeyWords::DOT:
+	case ESymbol::DOT_KEYWORD:
 		result += ".";
 		break;
-	case EKeyWords::FUNCTION:
+	case ESymbol::FUNCTION_KEYWORD:
 		result += "function";
 		break;
-	case EKeyWords::FOR:
+	case ESymbol::FOR_KEYWORD:
 		result += "for";
 		break;
-	case EKeyWords::TO:
+	case ESymbol::TO_KEYWORD:
 		result += "to";
 		break;
-	case EKeyWords::DOWNTO:
+	case ESymbol::DOWNTO_KEYWORD:
 		result += "downto";
 		break;
-	case EKeyWords::REPEAT:
+	case ESymbol::REPEAT_KEYWORD:
 		result += "repeat";
 		break;
-	case EKeyWords::UNTIL:
+	case ESymbol::UNTIL_KEYWORD:
 		result += "until";
 		break;
 	default:

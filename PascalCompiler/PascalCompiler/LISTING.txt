@@ -13,6 +13,6 @@ var
 begin
   //some comment
   a:= 10 mod 2;
-         ^ ERROR
-         Unexpected token
   b := 6 div 4;
+  x:= 2.1; ' 
+             | Unexpected token on 17 line and 14 character

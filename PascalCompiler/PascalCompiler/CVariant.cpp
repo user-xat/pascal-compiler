@@ -1,11 +1,11 @@
 #include "CVariant.h"
 
-CVariant::CVariant(EVariantType type)
+CVariant::CVariant(ESymbol type)
 {
 	this->m_type = type;
 }
 
-EVariantType CVariant::GetType()
+ESymbol CVariant::GetType()
 {
 	return this->m_type;
 }

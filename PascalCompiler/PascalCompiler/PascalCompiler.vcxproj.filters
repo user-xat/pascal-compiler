@@ -107,5 +107,8 @@
     <ClInclude Include="CSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ESymbol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -263,7 +263,7 @@ bool CLexer::SkipComments() {
 
 CTokenPtr CLexer::ProcessingKeyWord(const std::string &word) {
 	CTokenPtr token = nullptr;
-	std::map<std::string, EKeyWords>::const_iterator type = key_words.find(word);
+	std::map<std::string, ESymbol>::const_iterator type = key_words.find(word);
 	if (type != key_words.end()) {
 		token = std::make_unique<CKeywordToken>(type->second);
 	}

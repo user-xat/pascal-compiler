@@ -1,13 +1,13 @@
 #include "CSet.h"
 
-bool CSet::contains(const EKeyWords keyword) const
+bool CSet::contains(const ESymbol keyword) const
 {
 	return m_set.find(keyword) != m_set.end();
 }
 
 CSet CSet::operator+(const CSet& other) const
 {
-	std::set<EKeyWords> result;
+	std::set<ESymbol> result;
 	result.insert(m_set.begin(), m_set.end());
 	result.insert(other.m_set.begin(), other.m_set.end());
 	return CSet(result);

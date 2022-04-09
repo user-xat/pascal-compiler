@@ -168,6 +168,7 @@
     <ClInclude Include="CToken.h" />
     <ClInclude Include="CVariant.h" />
     <ClInclude Include="EKeyWords.h" />
+    <ClInclude Include="ESymbol.h" />
     <ClInclude Include="ETokenType.h" />
     <ClInclude Include="EVariantType.h" />
     <ClInclude Include="CSet.h" />

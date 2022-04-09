@@ -1,6 +1,6 @@
 #include "CRealVariant.h"
 
-CRealVariant::CRealVariant(double value) : CVariant(EVariantType::REAL)
+CRealVariant::CRealVariant(double value) : CVariant(ESymbol::REAL_VARIANT)
 {
 	this->m_value = value;
 }
@@ -12,6 +12,6 @@ double CRealVariant::GetValue()
 
 std::string CRealVariant::ToString()
 {
-	return std::string(std::to_string(this->m_value));
-	//return std::string("CONST:\treal: " + std::to_string(this->m_value));
+	//return std::string(std::to_string(this->m_value));
+	return std::string("CONST:\treal: " + std::to_string(this->m_value));
 }

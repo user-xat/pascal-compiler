@@ -2,17 +2,17 @@
 #ifndef CTOKEN_H
 #define CTOKEN_H
 
-#include "ETokenType.h"
+#include "ESymbol.h"
 #include <string>
 #include <memory>
 
 class CToken
 {
 private:
-	ETokenType m_type;
+	ESymbol m_type;
 public:
-	CToken(ETokenType type);
-	ETokenType GetType();
+	CToken(ESymbol type);
+	ESymbol GetType();
 	virtual std::string ToString() = 0;
 };
 
