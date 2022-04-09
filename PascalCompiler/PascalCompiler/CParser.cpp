@@ -94,7 +94,7 @@ bool CParser::Contains(const CSet& set) const {
 }
 
 bool CParser::Contains(const std::set<ETokenType>& set) const {
-	return CheckTokenType(ETokenType::KEYWORD) && set.find(m_cur_token->GetType()) != set.cend();
+	return m_cur_token != nullptr && set.find(m_cur_token->GetType()) != set.cend();
 }
 
 void CParser::BeginSkipErr(const CSet& starts, const CSet& followers) {
@@ -472,10 +472,10 @@ void CParser::SimpleExpression(const CSet& followers) {
 
 // <term>::=<factor>{<multiplicative operation><factor>}
 void CParser::Term(const CSet& followers) {
-	Factor(followers + CSet(std::set<EKeyWords> {EKeyWords::AOP_MULT, EKeyWords::AOP_DIV, EKeyWords::LOP_AND, EKeyWords::LOP_AND, EKeyWords::LOP_AND}));
+	Factor(followers + CSet(std::set<EKeyWords> {EKeyWords::AOP_MULT, EKeyWords::AOP_DIV_REAL, EKeyWords::AOP_DIV, EKeyWords::AOP_MOD, EKeyWords::LOP_AND}));
 	while (MultiplicativeOperation(followers)) {
 		GetNextToken();
-		Factor(followers + CSet(std::set<EKeyWords> {EKeyWords::AOP_MULT, EKeyWords::AOP_DIV, EKeyWords::LOP_AND, EKeyWords::LOP_AND, EKeyWords::LOP_AND}));
+		Factor(followers + CSet(std::set<EKeyWords> {EKeyWords::AOP_MULT, EKeyWords::AOP_DIV_REAL, EKeyWords::AOP_DIV, EKeyWords::AOP_MOD, EKeyWords::LOP_AND}));
 	}
 }
 
@@ -483,20 +483,20 @@ void CParser::Term(const CSet& followers) {
 bool CParser::MultiplicativeOperation(const CSet& followers) {
 	bool result = false;
 	BeginSkipErr(
-		CSet(std::set<EKeyWords> {EKeyWords::AOP_MULT, EKeyWords::AOP_DIV, EKeyWords::LOP_AND, EKeyWords::LOP_AND, EKeyWords::LOP_AND}),
+		CSet(std::set<EKeyWords> {EKeyWords::AOP_MULT, EKeyWords::AOP_DIV_REAL, EKeyWords::AOP_DIV, EKeyWords::AOP_MOD, EKeyWords::LOP_AND}),
 		followers);
-	if (Contains(CSet(std::set<EKeyWords> {EKeyWords::AOP_MULT, EKeyWords::AOP_DIV, EKeyWords::LOP_AND, EKeyWords::LOP_AND, EKeyWords::LOP_AND})))
+	if (Contains(CSet(std::set<EKeyWords> {EKeyWords::AOP_MULT, EKeyWords::AOP_DIV_REAL, EKeyWords::AOP_DIV, EKeyWords::AOP_MOD, EKeyWords::LOP_AND})))
 	{
 		if (CheckKeyword(EKeyWords::AOP_MULT)) {
 			result = true;
 		}
-		else if (CheckKeyword(EKeyWords::AOP_DIV)) {
+		else if (CheckKeyword(EKeyWords::AOP_DIV_REAL)) {
 			result = true;
 		}
-		else if (CheckKeyword(EKeyWords::LOP_AND)) { // div
+		else if (CheckKeyword(EKeyWords::AOP_DIV)) { // div
 			result = true;
 		}
-		else if (CheckKeyword(EKeyWords::LOP_AND)) { // mod
+		else if (CheckKeyword(EKeyWords::AOP_MOD)) { // mod
 			result = true;
 		}
 		else if (CheckKeyword(EKeyWords::LOP_AND)) {

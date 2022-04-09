@@ -1,13 +1,14 @@
 program myprog;
+
+type
+  myint = integer;
+  str=string;
+
 var
   a,b,c:integer;
   name:string;
   x:real;
   flag:boolean;
-
-type
-  myint = integer;
-  str=string;
 
 begin
   //some comment

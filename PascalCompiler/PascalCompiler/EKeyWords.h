@@ -14,7 +14,9 @@ enum class EKeyWords
 	AOP_SUM,
 	AOP_SUB,
 	AOP_MULT,
+	AOP_DIV_REAL,
 	AOP_DIV,
+	AOP_MOD,
 	// logical operators
 	LOP_AND,
 	LOP_OR,

@@ -165,9 +165,8 @@ void CLexer::ThrowError(const std::string& error)
 	for (int i = 0; i < m_start_token; ++i) {
 		mes_err += ' ';
 	}
-	mes_err += "^ ERROR";
-	m_file->WriteLine(mes_err);
-	m_file->WriteLine(error);
+	m_file->WriteLine(mes_err + "^ ERROR");
+	m_file->WriteLine(mes_err + error);
 }
 
 bool CLexer::IsLetter(const char ch) {
