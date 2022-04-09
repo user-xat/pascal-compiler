@@ -1,13 +1,13 @@
 program myprog;
 
-type
-  myint = integer;
-  str=string;
+jfdkfj dfjdkf type
+  myint djfdj = integer dfjdfj;
+  * 4334 str=string;
 
 var
   a,b,c:integer;
   name:string;
-  x:real;
+  +x:real;
   flag:boolean;
 
 begin
@@ -17,7 +17,7 @@ begin
   x:= 2.1; 
   name :='some string';
   flag:= True;
-  if (a = 2) and (b < 1) then 
+  if (a = 2) and (b < 1) 
     if (x >= 0) or (name <> 'some str') then
       c := 2 + 4
     else

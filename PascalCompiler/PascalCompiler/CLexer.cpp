@@ -106,7 +106,7 @@ CTokenPtr CLexer::GetNextToken()
 		if (m_cur_sym >= m_line.size()) {
 			// TODO: Error
 			std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
-			m_file->WriteLine(err_mes);
+			ThrowError(err_mes);
 			return nullptr;
 		}
 		std::string str = m_line.substr(start, m_cur_sym - start);
@@ -123,7 +123,7 @@ CTokenPtr CLexer::GetNextToken()
 			else {
 				// TODO: Îøèáêà 
 				std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
-				m_file->WriteLine(err_mes);
+				ThrowError(err_mes);
 				return nullptr;
 			}
 		}
@@ -135,7 +135,7 @@ CTokenPtr CLexer::GetNextToken()
 			else {
 				// TODO: Îøèáêà 
 				std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
-				m_file->WriteLine(err_mes);
+				ThrowError(err_mes);
 				return nullptr;
 			}
 		}
@@ -166,7 +166,7 @@ void CLexer::ThrowError(const std::string& error)
 		mes_err += ' ';
 	}
 	m_file->WriteLine(mes_err + "^ ERROR");
-	m_file->WriteLine(mes_err + error);
+	m_file->WriteLine(mes_err + "  " + error);
 }
 
 bool CLexer::IsLetter(const char ch) {
@@ -273,10 +273,6 @@ CTokenPtr CLexer::ProcessingKeyWord(const std::string &word) {
 
 std::string CLexer::GenerateErrorMessage(int line_num)
 {
-	std::string mes;
-	for (int i = 0; i < m_cur_sym; ++i) {
-		mes += ' ';
-	}
-	mes += "| Unexpected token on " + std::to_string(line_num) + " line and " + std::to_string(m_cur_sym + 1) + " character";
+	std::string mes{ "Unexpected token on " + std::to_string(line_num) + " line and " + std::to_string(m_cur_sym + 1) + " character" };
 	return mes;
 }

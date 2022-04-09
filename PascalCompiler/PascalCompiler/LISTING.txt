@@ -1,18 +1,46 @@
 program myprog;
 
-type
-  myint = integer;
-  str=string;
+jfdkfj dfjdkf type
+^ ERROR
+  Unexpected token
+  myint djfdj = integer dfjdfj;
+        ^ ERROR
+          Expected token is not type of 
+              ^ ERROR
+                Expected token is not a type
+                ^ ERROR
+                  Unexpected token
+  * 4334 str=string;
+  ^ ERROR
+    Unexpected token
 
 var
   a,b,c:integer;
   name:string;
-  x:real;
+  +x:real;
+  ^ ERROR
+    Unexpected token
   flag:boolean;
 
 begin
   //some comment
   a:= 10 mod 2;
   b := 6 div 4;
-  x:= 2.1; ' 
-             | Unexpected token on 17 line and 14 character
+  x:= 2.1; 
+  name :='some string';
+  flag:= True;
+  if (a = 2) and (b < 1) 
+    if (x >= 0) or (name <> 'some str') then
+    ^ ERROR
+      Unexpected token
+              ^ ERROR
+                Unexpected token
+      c := 2 + 4
+    else
+      name := 'text';
+  while 2 >= 5 do
+  begin
+    x:=3.3 / 3;
+  end;
+end.
+

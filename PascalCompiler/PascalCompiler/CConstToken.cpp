@@ -2,22 +2,22 @@
 
 CConstToken::CConstToken(int value) : CToken(ESymbol::CONST_TOKEN)
 {
-	this->m_variant = std::make_unique<CIntVariant>(value);
+	m_variant = std::make_unique<CIntVariant>(value);
 }
 
 CConstToken::CConstToken(double value) : CToken(ESymbol::CONST_TOKEN)
 {
-	this->m_variant = std::make_unique<CRealVariant>(value);
+	m_variant = std::make_unique<CRealVariant>(value);
 }
 
 CConstToken::CConstToken(std::string value) : CToken(ESymbol::CONST_TOKEN)
 {
-	this->m_variant = std::make_unique<CStringVariant>(value);
+	m_variant = std::make_unique<CStringVariant>(value);
 }
 
 CConstToken::CConstToken(bool value) : CToken(ESymbol::CONST_TOKEN)
 {
-	this->m_variant = std::make_unique<CBooleanVariant>(value);
+	m_variant = std::make_unique<CBooleanVariant>(value);
 }
 
 CVariant* CConstToken::GetVariant()

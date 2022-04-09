@@ -22,9 +22,7 @@ private:
 	bool CheckConstVariant(ESymbol variant) const;
 	void Type();
 	bool Contains(const CSet& set) const;
-	bool Contains(const std::set<ESymbol>& set) const;
 	void BeginSkipErr(const CSet& starts, const CSet& followers);
-	void BeginSkipErr(const std::set<ESymbol>& starts, const CSet& followers);
 	void EndSkipErr(const CSet& followers);
 	void Program();
 	void Block(const CSet& followers);

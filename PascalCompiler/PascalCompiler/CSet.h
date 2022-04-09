@@ -18,4 +18,4 @@ public:
 	friend CSet& operator+(const EKeyWords keyword, CSet& set);*/
 };
 
-#endif // !ISET_H
+#endif // !CSET_H

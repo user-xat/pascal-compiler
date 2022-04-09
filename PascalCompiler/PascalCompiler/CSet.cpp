@@ -1,8 +1,8 @@
 #include "CSet.h"
 
-bool CSet::contains(const ESymbol keyword) const
+bool CSet::contains(const ESymbol symbol) const
 {
-	return m_set.find(keyword) != m_set.end();
+	return m_set.find(symbol) != m_set.end();
 }
 
 CSet CSet::operator+(const CSet& other) const
