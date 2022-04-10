@@ -13,7 +13,7 @@ private:
 	std::ifstream m_in_file;
 	std::ofstream m_out_file;
 	std::string m_path;
-	int m_numLine;
+	int m_num_line;
 
 public:
 	CIOFile(const std::string& path);

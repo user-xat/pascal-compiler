@@ -7,7 +7,12 @@
 int main()
 {
     using namespace std;
-    string path = "synt_error.txt";
+    //string path = "minimum_error.txt";
+    string path = "minimum_error.txt";
+    path = "medium_error.txt";
+    path = "synt_error.txt";
+    path = "hard_error.txt";
+    
     //CIOFile io_module(path);
     //string line;
     //while (io_module.GetNextLine(line)) {

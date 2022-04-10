@@ -20,10 +20,10 @@ void CParser::Accept(ESymbol symbol)
 	if (m_cur_token == nullptr) {
 		throw "Current token is nullptr";
 	}
-	else if ((m_cur_token->GetType() != ESymbol::IDENT_TOKEN
-		|| m_cur_token->GetType() != ESymbol::CONST_TOKEN)
-		&& m_cur_token->GetType() != ESymbol::KEYWORD_TOKEN) {
-		if (m_cur_token->GetType() != symbol) {
+	else if (symbol == ESymbol::IDENT_TOKEN || symbol == ESymbol::CONST_TOKEN)
+	{
+		if (m_cur_token->GetType() != symbol)
+		{
 			std::string type_str;
 			switch (symbol)
 			{
@@ -40,8 +40,17 @@ void CParser::Accept(ESymbol symbol)
 			m_lexer->ThrowError("Expected token is not type of " + type_str);
 		}
 	}
-	else if (dynamic_cast<CKeywordToken*>(m_cur_token.get())->GetKeyword() != symbol) {
-		m_lexer->ThrowError("Expected token is " + m_cur_token->ToString());
+	else if (m_cur_token->GetType() != ESymbol::KEYWORD_TOKEN || (CheckKeyword(ESymbol::KEYWORD_TOKEN) && dynamic_cast<CKeywordToken*>(m_cur_token.get())->GetKeyword() != symbol))
+	{
+		std::string mes_err;
+		auto sym_iter = m_key_words.find(symbol);
+		if (sym_iter == m_key_words.cend()) {
+			mes_err = "unknown";
+		}
+		else {
+			mes_err = sym_iter->second;
+		}
+		m_lexer->ThrowError("Expected token is " + mes_err);
 	}
 	GetNextToken();
 }
@@ -49,6 +58,8 @@ void CParser::Accept(ESymbol symbol)
 bool CParser::CheckTokenType(ESymbol type) const
 {
 	if (m_cur_token != nullptr) {
+		ESymbol sym = m_cur_token->GetType();
+		auto temp = dynamic_cast<CConstToken*>(m_cur_token.get());
 		return m_cur_token->GetType() == type;
 	}
 	return false;
@@ -56,16 +67,18 @@ bool CParser::CheckTokenType(ESymbol type) const
 
 bool CParser::CheckKeyword(ESymbol keyword) const
 {
-	return CheckTokenType(ESymbol::KEYWORD_TOKEN) && dynamic_cast<CKeywordToken*>(m_cur_token.get())->GetKeyword() == keyword;
+	return CheckTokenType(ESymbol::KEYWORD_TOKEN) 
+		&& dynamic_cast<CKeywordToken*>(m_cur_token.get())->GetKeyword() == keyword;
 }
 
 bool CParser::CheckConstVariant(ESymbol variant) const
 {
-	return CheckTokenType(ESymbol::CONST_TOKEN) && dynamic_cast<CConstToken*>(m_cur_token.get())->GetVariant()->GetType() == variant;
+	return CheckTokenType(ESymbol::CONST_TOKEN) 
+		&& dynamic_cast<CConstToken*>(m_cur_token.get())->GetVariant()->GetType() == variant;
 }
 
-void CParser::Type() {
-	if (m_cur_token == nullptr) {
+void CParser::Type(const CSet& followers) {
+	/*if (m_cur_token == nullptr) {
 		throw "Current token is nullptr";
 	}
 	else if (m_cur_token->GetType() != ESymbol::KEYWORD_TOKEN) {
@@ -79,6 +92,32 @@ void CParser::Type() {
 			m_lexer->ThrowError("Expected token is not a type");
 		}
 		GetNextToken();
+	}*/
+	BeginSkipErr(
+		CSet(std::set<ESymbol> {ESymbol::INTEGER_KEYWORD,
+			ESymbol::REAL_KEYWORD,
+			ESymbol::STRING_KEYWORD,
+			ESymbol::BOOLEAN_KEYWORD}),
+		followers);
+	if (Contains(
+		CSet(std::set<ESymbol> {ESymbol::INTEGER_KEYWORD,
+			ESymbol::REAL_KEYWORD,
+			ESymbol::STRING_KEYWORD,
+			ESymbol::BOOLEAN_KEYWORD})))
+	{
+		if (CheckKeyword(ESymbol::INTEGER_KEYWORD)) {
+			Accept(ESymbol::INTEGER_KEYWORD);
+		}
+		else if (CheckKeyword(ESymbol::REAL_KEYWORD)) {
+			Accept(ESymbol::REAL_KEYWORD);
+		}
+		else if (CheckKeyword(ESymbol::STRING_KEYWORD)) {
+			Accept(ESymbol::STRING_KEYWORD);
+		}
+		else if (CheckKeyword(ESymbol::BOOLEAN_KEYWORD)) {
+			Accept(ESymbol::BOOLEAN_KEYWORD);
+		}
+		EndSkipErr(followers);
 	}
 }
 
@@ -92,7 +131,7 @@ bool CParser::Contains(const CSet& set) const {
 }
 
 void CParser::BeginSkipErr(const CSet& starts, const CSet& followers) {
-	if (!Contains(starts) && !Contains(followers))
+	if (!Contains(starts))
 	{
 		m_lexer->ThrowError("Unexpected token");
 		while (!Contains(starts) && !Contains(followers)) {
@@ -124,11 +163,23 @@ void CParser::Program()
 
 // <block>::=<type section><variable section><function section><compound statement>
 void CParser::Block(const CSet& followers) {
-	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::TYPE_KEYWORD, ESymbol::VAR_KEYWORD, ESymbol::FUNCTION_KEYWORD, ESymbol::BEGIN_KEYWORD}), followers);
-	TypeSection(followers + CSet(std::set<ESymbol> {ESymbol::VAR_KEYWORD, ESymbol::FUNCTION_KEYWORD, ESymbol::BEGIN_KEYWORD}));
-	VariableSection(followers + CSet(std::set<ESymbol> {ESymbol::FUNCTION_KEYWORD, ESymbol::BEGIN_KEYWORD}));
-	FunctionSection(followers + CSet(std::set<ESymbol> {ESymbol::BEGIN_KEYWORD}));
-	CompoundStatement(followers);
+	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::TYPE_KEYWORD,
+		ESymbol::VAR_KEYWORD,
+		ESymbol::FUNCTION_KEYWORD,
+		ESymbol::BEGIN_KEYWORD}),
+		followers);
+	if (CheckKeyword(ESymbol::TYPE_KEYWORD)) {
+		TypeSection(followers + CSet(std::set<ESymbol> {ESymbol::VAR_KEYWORD, ESymbol::FUNCTION_KEYWORD, ESymbol::BEGIN_KEYWORD}));
+	}
+	if (CheckKeyword(ESymbol::VAR_KEYWORD)) {
+		VariableSection(followers + CSet(std::set<ESymbol> {ESymbol::FUNCTION_KEYWORD, ESymbol::BEGIN_KEYWORD}));
+	}
+	if (CheckKeyword(ESymbol::FUNCTION_KEYWORD)) {
+		FunctionSection(followers + CSet(std::set<ESymbol> {ESymbol::BEGIN_KEYWORD}));
+	}
+	if (CheckKeyword(ESymbol::BEGIN_KEYWORD)) {
+		CompoundStatement(followers);
+	}
 	EndSkipErr(followers);
 }
 
@@ -152,7 +203,7 @@ void CParser::TypeDefinition(const CSet& followers) {
 	if (CheckTokenType(ESymbol::IDENT_TOKEN)) {
 		Accept(ESymbol::IDENT_TOKEN);
 		Accept(ESymbol::COP_EQ_KEYWORD);
-		Type();
+		Type(followers);
 		EndSkipErr(followers);
 	}
 }
@@ -166,6 +217,7 @@ void CParser::VariableSection(const CSet& followers) {
 		{
 			DescriptionOfVariables(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD}));
 			Accept(ESymbol::SEMICOLON_KEYWORD);
+			//BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN}), followers);
 		} while (CheckTokenType(ESymbol::IDENT_TOKEN));
 		EndSkipErr(followers);
 	}
@@ -181,7 +233,7 @@ void CParser::DescriptionOfVariables(const CSet& followers) {
 			Accept(ESymbol::IDENT_TOKEN);
 		}
 		Accept(ESymbol::COLON_KEYWORD);
-		Type();
+		Type(followers);
 		EndSkipErr(followers);
 	}
 }
@@ -191,10 +243,14 @@ void CParser::FunctionSection(const CSet& followers) {
 	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::FUNCTION_KEYWORD}), followers);
 	while (Contains(CSet(std::set<ESymbol> {ESymbol::FUNCTION_KEYWORD}))) {
 		Accept(ESymbol::FUNCTION_KEYWORD);
-		FunctionHeader(followers + CSet(std::set<ESymbol> {ESymbol::TYPE_KEYWORD, ESymbol::VAR_KEYWORD, ESymbol::FUNCTION_KEYWORD, ESymbol::BEGIN_KEYWORD}));
-		Block(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD});
+		FunctionHeader(followers + 
+			CSet(std::set<ESymbol> {ESymbol::TYPE_KEYWORD, 
+				ESymbol::VAR_KEYWORD, 
+				ESymbol::FUNCTION_KEYWORD, 
+				ESymbol::BEGIN_KEYWORD}));
+		Block(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD}));
 		Accept(ESymbol::SEMICOLON_KEYWORD);
-		BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::FUNCTION_KEYWORD}), followers);
+		EndSkipErr(followers + CSet(std::set<ESymbol> {ESymbol::FUNCTION_KEYWORD}));
 	}
 }
 
@@ -212,22 +268,22 @@ void CParser::FunctionHeader(const CSet& followers) {
 			Accept(ESymbol::CLOSING_BRACKET_KEYWORD);
 		}
 		Accept(ESymbol::COLON_KEYWORD);
-		Type();
+		Type(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD}));
 		Accept(ESymbol::SEMICOLON_KEYWORD);
 		EndSkipErr(followers);
 	}
 }
 
-// Õ≈ –¿¡Œ“¿≈“ Õ≈…“–¿À»«¿÷»ﬂ —»Õ“¿ —»◊≈— »’ Œÿ»¡Œ 
-// <formal parameters section>::= <parameters group> |
-// var <parameters group> | function <parameters group>
+// <formal parameters section>::= <parameters group> | var <parameters group> | function <parameters group>
 void CParser::FormalParametersSection(const CSet& followers) {
-	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::VAR_KEYWORD, ESymbol::FUNCTION_KEYWORD}), followers);
-	if (Contains(CSet(std::set<ESymbol> {ESymbol::VAR_KEYWORD, ESymbol::FUNCTION_KEYWORD}))) {
-		GetNextToken();
+	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN, ESymbol::VAR_KEYWORD, ESymbol::FUNCTION_KEYWORD}), followers);
+	if (Contains(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN, ESymbol::VAR_KEYWORD, ESymbol::FUNCTION_KEYWORD}))) {
+		if (CheckKeyword(ESymbol::VAR_KEYWORD) || CheckKeyword(ESymbol::FUNCTION_KEYWORD)) {
+			GetNextToken();
+		}
+		ParametersGroup(followers);
+		EndSkipErr(followers);
 	}
-	BeginSkipErr(std::set<ESymbol> {ESymbol::IDENT_TOKEN}, followers);
-	ParametersGroup(followers);
 }
 
 // <parameters group>::=<name>{,<name>}:<type>
@@ -239,7 +295,7 @@ void CParser::ParametersGroup(const CSet& followers) {
 			Accept(ESymbol::IDENT_TOKEN);
 		} while (CheckKeyword(ESymbol::COMMA_KEYWORD) && GetNextToken());
 		Accept(ESymbol::COLON_KEYWORD);
-		Type();
+		Type(followers);
 		EndSkipErr(followers);
 	}
 }
@@ -247,7 +303,8 @@ void CParser::ParametersGroup(const CSet& followers) {
 // <compound section>::= begin <statement>{;<statement>} end
 void CParser::CompoundStatement(const CSet& followers) {
 	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::BEGIN_KEYWORD}), followers);
-	if (Contains(CSet(std::set<ESymbol> {ESymbol::BEGIN_KEYWORD}))) {
+	if (Contains(CSet(std::set<ESymbol> {ESymbol::BEGIN_KEYWORD})))
+	{
 		Accept(ESymbol::BEGIN_KEYWORD);
 		Statement(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD, ESymbol::END_KEYWORD}));
 		while (CheckKeyword(ESymbol::SEMICOLON_KEYWORD)) {
@@ -263,9 +320,19 @@ void CParser::CompoundStatement(const CSet& followers) {
 // <statement>::=<assignment statement> | <compound statement> | 
 // <condition statement> | <loop statement> | <empty statement>
 void CParser::Statement(const CSet& followers) {
-	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN, ESymbol::BEGIN_KEYWORD, ESymbol::IF_KEYWORD, ESymbol::FOR_KEYWORD, ESymbol::WHILE_KEYWORD, ESymbol::REPEAT_KEYWORD}),
+	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN,
+		ESymbol::BEGIN_KEYWORD,
+		ESymbol::IF_KEYWORD,
+		ESymbol::FOR_KEYWORD,
+		ESymbol::WHILE_KEYWORD,
+		ESymbol::REPEAT_KEYWORD}),
 		followers);
-	if (Contains(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN, ESymbol::BEGIN_KEYWORD, ESymbol::IF_KEYWORD, ESymbol::FOR_KEYWORD, ESymbol::WHILE_KEYWORD, ESymbol::REPEAT_KEYWORD})))
+	if (Contains(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN,
+		ESymbol::BEGIN_KEYWORD,
+		ESymbol::IF_KEYWORD,
+		ESymbol::FOR_KEYWORD,
+		ESymbol::WHILE_KEYWORD,
+		ESymbol::REPEAT_KEYWORD})))
 	{
 		if (CheckTokenType(ESymbol::IDENT_TOKEN)) {
 			AssignmentStatement(followers);
@@ -481,41 +548,25 @@ void CParser::Term(const CSet& followers) {
 // <multiplicative operation>::= *|/|div|mod|and
 bool CParser::MultiplicativeOperation(const CSet& followers) {
 	bool result = false;
-	BeginSkipErr(
-		CSet(std::set<ESymbol> {ESymbol::AOP_MULT_KEYWORD,
-			ESymbol::AOP_DIV_REAL_KEYWORD,
-			ESymbol::AOP_DIV_KEYWORD,
-			ESymbol::AOP_MOD_KEYWORD,
-			ESymbol::LOP_AND_KEYWORD}),
-		followers);
-	if (Contains(CSet(std::set<ESymbol> {ESymbol::AOP_MULT_KEYWORD,
-		ESymbol::AOP_DIV_REAL_KEYWORD,
-		ESymbol::AOP_DIV_KEYWORD,
-		ESymbol::AOP_MOD_KEYWORD,
-		ESymbol::LOP_AND_KEYWORD})))
-	{
-		if (CheckKeyword(ESymbol::AOP_MULT_KEYWORD)) {
-			Accept(ESymbol::AOP_MULT_KEYWORD);
-			result = true;
-		}
-		else if (CheckKeyword(ESymbol::AOP_DIV_REAL_KEYWORD)) {
-			Accept(ESymbol::AOP_DIV_REAL_KEYWORD);
-			result = true;
-		}
-		else if (CheckKeyword(ESymbol::AOP_DIV_KEYWORD)) { // div
-			Accept(ESymbol::AOP_DIV_KEYWORD);
-			result = true;
-		}
-		else if (CheckKeyword(ESymbol::AOP_MOD_KEYWORD)) { // mod
-			Accept(ESymbol::AOP_MOD_KEYWORD);
-			result = true;
-		}
-		else if (CheckKeyword(ESymbol::LOP_AND_KEYWORD)) {
-			Accept(ESymbol::LOP_AND_KEYWORD);
-			result = true;
-		}
-		
-		EndSkipErr(followers);
+	if (CheckKeyword(ESymbol::AOP_MULT_KEYWORD)) {
+		Accept(ESymbol::AOP_MULT_KEYWORD);
+		result = true;
+	}
+	else if (CheckKeyword(ESymbol::AOP_DIV_REAL_KEYWORD)) {
+		Accept(ESymbol::AOP_DIV_REAL_KEYWORD);
+		result = true;
+	}
+	else if (CheckKeyword(ESymbol::AOP_DIV_KEYWORD)) { // div
+		Accept(ESymbol::AOP_DIV_KEYWORD);
+		result = true;
+	}
+	else if (CheckKeyword(ESymbol::AOP_MOD_KEYWORD)) { // mod
+		Accept(ESymbol::AOP_MOD_KEYWORD);
+		result = true;
+	}
+	else if (CheckKeyword(ESymbol::LOP_AND_KEYWORD)) {
+		Accept(ESymbol::LOP_AND_KEYWORD);
+		result = true;
 	}
 	return result;
 }

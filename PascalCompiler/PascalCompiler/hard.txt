@@ -1,20 +1,41 @@
 program myprog;
 var x,y,z:real;
   a:integer;
-  b:integer;
+  b,i:integer;
 
 function Sum(a,b: real): real;
+var
+  in_x,in_b,i:integer;
+  in_z:real;
+  flag:boolean;
 begin
-  Result := a + b;
+  for i := 1 to 10 do
+    a := a + i;
+  in_x := a div 3;
+  in_b:= in_x + 32;
+  in_z:= in_b / 2.0;
+  Result := in_z + in_b;
+end;
+
+function Func(a,b: real): real;
+var
+  in_a,i:integer;
+  in_z:real;
+begin
+  for i := 1 to 10 do
+    in_a := a + i;
+  in_a := a div 3;
+  in_z:= b / 2.0;
+  Result := in_a / in_z;
 end;
 
 begin
   x:=0.5;
   y := 1.4005;
-  z :=Sum(x,y);
-  for var i := 1 to 10 do
+  //z :=Sum(x,y);
+  for i := 1 to 10 do
     a := a + i;
   repeat
-    b:= b + 1;
+    b:= b + 1
   until b > 10;
 end.

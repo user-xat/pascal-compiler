@@ -1,0 +1,29 @@
+program myprog;
+type
+  myint := integer;
+  str=type;
+  1/3mytype=type;
+
+var
+  a,div,c:integer;
+  name:string;
+  x:real;
+  flag:boolean;
+
+begin
+  //some comment
+  a:= 10 mod 2;
+  b := +6 div 4;
+  x:= 2.1 dfdf; 
+  name ='some string';
+  flag:= True;
+  if (a := 2) and (b < 1) then 
+    if (x >= 0) or fdf (name <> 'some str') then dfdf
+      c := 2 + 4
+    else
+      name := 'text';
+  dfdf while 2 >= 5 dfd do
+  begin sdaffd
+    **3**x:=3.3 / 3;
+  end dfdfs;
+end.

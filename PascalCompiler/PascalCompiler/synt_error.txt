@@ -1,29 +1,15 @@
 program myprog;
-
-jfdkfj dfjdkf type
-  myint djfdj = integer dfjdfj;
-  * 4334 str=string;
-
-var
-  a,b,c:integer;
-  name:string;
-  +x:real;
-  flag:boolean;
+var x,y,z:real;
+  a,:integer;
+  b:=integer;
 
 begin
-  //some comment
-  a:= 10 mod 2;
-  b := 6 div 4;
-  x:= 2.1; 
-  name :='some string';
-  flag:= True;
-  if (a = 2) and (b < 1) 
-    if (x >= 0) or (name <> 'some str') then
-      c := 2 + 4
-    else
-      name := 'text';
-  while 2 >= 5 do
-  begin
-    x:=3.3 / 3;
-  end;
+  x:=fdfdf 0.5;
+  and y := 1.4005;
+  //z :=Sum(x,y);
+  for dfdf var i := sfd to 10 fdf do adf
+    a := a + i;
+  repeat dfsf
+    b:= b + 1 fdfd;
+  until b := 10;
 end.

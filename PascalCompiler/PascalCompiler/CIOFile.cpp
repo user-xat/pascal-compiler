@@ -2,7 +2,7 @@
 
 CIOFile::CIOFile(const std::string& path) {
 	this->m_path = path;
-	m_numLine = 0;
+	m_num_line = 0;
 	m_in_file.open(path);
 	if (!m_in_file.is_open())
 	{
@@ -22,7 +22,7 @@ CIOFile::~CIOFile() {
 bool CIOFile::GetNextLine(std::string& line) {
 	if (!m_in_file.eof()) {
 		std::getline(m_in_file, line);
-		m_numLine++;
+		m_num_line++;
 		WriteLine(line);
 		return true;
 	}
@@ -32,7 +32,7 @@ bool CIOFile::GetNextLine(std::string& line) {
 
 int CIOFile::GetNumLine() const
 {
-	return m_numLine;
+	return m_num_line;
 }
 
 CIOFile& CIOFile::WriteLine(const std::string& line) 

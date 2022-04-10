@@ -1,0 +1,22 @@
+program myprog;
+var
+  a,b,:integer;
+  3*name:string;
+  x y:tifdfy;
+  flag:boolean;
+
+begin
+  // some comment here
+  a dfdd := 10 - 3;
+  b := *2 *(3 + 4);
+  c:= mod a*b;
+  x:= 5.65 /2.1 fddfd;
+  { and
+  here
+  }
+  name :='some string';
+  flag:= True;
+  flag = False and 423;
+  (* the end of
+  the program *)
+end.
