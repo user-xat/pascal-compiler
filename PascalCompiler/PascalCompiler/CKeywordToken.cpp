@@ -2,15 +2,15 @@
 
 CKeywordToken::CKeywordToken(ESymbol keyword) : CToken(ESymbol::KEYWORD_TOKEN)
 {
-	this->m_keyword = keyword;
+	m_keyword = keyword;
 }
 
-ESymbol CKeywordToken::GetKeyword()
+ESymbol CKeywordToken::GetKeyword() const
 {
-	return this->m_keyword;
+	return m_keyword;
 }
 
-std::string CKeywordToken::ToString()
+std::string CKeywordToken::ToString() const
 {
 	std::string result("KEYWORD:\t");
 	//std::string result("");

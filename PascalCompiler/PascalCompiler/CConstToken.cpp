@@ -20,12 +20,12 @@ CConstToken::CConstToken(bool value) : CToken(ESymbol::CONST_TOKEN)
 	m_variant = std::make_unique<CBooleanVariant>(value);
 }
 
-CVariant* CConstToken::GetVariant()
+CVariant* CConstToken::GetVariant() const
 {
 	return m_variant.get();
 }
 
-std::string CConstToken::ToString()
+std::string CConstToken::ToString() const
 {
 	return m_variant->ToString();
 }

@@ -12,8 +12,8 @@ private:
 	ESymbol m_type;
 public:
 	CToken(ESymbol type);
-	ESymbol GetType();
-	virtual std::string ToString() = 0;
+	ESymbol GetType() const;
+	virtual std::string ToString() const = 0;
 };
 
 using CTokenPtr = std::unique_ptr<CToken>;

@@ -11,8 +11,8 @@ private:
 	ESymbol m_keyword;
 public:
 	CKeywordToken(ESymbol keyword);
-	ESymbol GetKeyword();
-	std::string ToString() override;
+	ESymbol GetKeyword() const;
+	std::string ToString() const override;
 };
 
 #endif // !_CKEYWORD_TOKEN_H_

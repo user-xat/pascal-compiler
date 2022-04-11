@@ -140,15 +140,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CBooleanVariant.cpp" />
+    <ClCompile Include="CBoolType.cpp" />
     <ClCompile Include="CConstToken.cpp" />
+    <ClCompile Include="CErrorType.cpp" />
+    <ClCompile Include="CIntType.cpp" />
     <ClCompile Include="CParser.cpp" />
     <ClCompile Include="CIdentToken.cpp" />
     <ClCompile Include="CIntVariant.cpp" />
     <ClCompile Include="CIOFile.cpp" />
     <ClCompile Include="CKeywordToken.cpp" />
     <ClCompile Include="CLexer.cpp" />
+    <ClCompile Include="CRealType.cpp" />
     <ClCompile Include="CRealVariant.cpp" />
+    <ClCompile Include="CScope.cpp" />
+    <ClCompile Include="CScopeStack.cpp" />
     <ClCompile Include="CSet.cpp" />
+    <ClCompile Include="CStringType.cpp" />
     <ClCompile Include="CStringVariant.cpp" />
     <ClCompile Include="CToken.cpp" />
     <ClCompile Include="CVariant.cpp" />
@@ -156,7 +163,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBooleanVariant.h" />
+    <ClInclude Include="CBoolType.h" />
     <ClInclude Include="CConstToken.h" />
+    <ClInclude Include="CErrorType.h" />
+    <ClInclude Include="CIntType.h" />
+    <ClInclude Include="CRealType.h" />
+    <ClInclude Include="CScope.h" />
+    <ClInclude Include="CScopeStack.h" />
+    <ClInclude Include="CStringType.h" />
+    <ClInclude Include="IDataType.h" />
     <ClInclude Include="CParser.h" />
     <ClInclude Include="CIdentToken.h" />
     <ClInclude Include="CIntVariant.h" />
@@ -167,6 +182,7 @@
     <ClInclude Include="CStringVariant.h" />
     <ClInclude Include="CToken.h" />
     <ClInclude Include="CVariant.h" />
+    <ClInclude Include="EDataType.h" />
     <ClInclude Include="EKeyWords.h" />
     <ClInclude Include="ESymbol.h" />
     <ClInclude Include="ETokenType.h" />

@@ -10,8 +10,8 @@ private:
 	std::string m_identifier;
 public:
 	CIdentToken(std::string identifier);
-	std::string GetIdentifier();
-	std::string ToString() override;
+	std::string GetIdentifier() const;
+	std::string ToString() const override;
 };
 
 #endif // !_CIDENT_TOKEN_H_

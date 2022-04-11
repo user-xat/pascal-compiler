@@ -2,6 +2,12 @@
 #ifndef CPARSER_H
 #define CPARSER_H
 
+#include "IDataType.h"
+#include "CIntType.h"
+#include "CRealType.h"
+#include "CStringType.h"
+#include "CBoolType.h"
+#include "CErrorType.h"
 #include "CLexer.h"
 #include "CSet.h"
 #include <set>
@@ -96,6 +102,14 @@ private:
 		{ESymbol::DOWNTO_KEYWORD, "downto"},
 		{ESymbol::REPEAT_KEYWORD, "repeat"},
 		{ESymbol::UNTIL_KEYWORD, "until"},
+	};
+
+	const std::map<EDataType, IDataTypePtr> m_base_types = {
+		{EDataType::INTEGER, std::make_shared<CIntType>()},
+		{EDataType::REAL, std::make_shared<CRealType>()},
+		{EDataType::BOOLEAN, std::make_shared<CBoolType>()},
+		{EDataType::STRING, std::make_shared<CStringType>()},
+		{EDataType::ERROR, std::make_shared<CErrorType>()}
 	};
 };
 
