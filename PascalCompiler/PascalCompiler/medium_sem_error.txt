@@ -10,17 +10,17 @@ var
 
 begin
   //some comment
-  a:= 10 mod 2;
-  b := 6 div 4;
-  x:= 2.1; 
-  name :='some string';
-  flag:= True;
-  if (a = 2) and (b < 1) then 
-    if (x >= 0) or (name <> 'some str') then
+  a:= 10.5 mod 2;
+  x := 6 div 4;
+  name:= 2.4;  
+  virtual :='some string';
+  flag:= 'string';
+  if (a + 2) and (b < 1) then 
+    if (True >= 0) + ('some str' <> 23) then
       c := 2 + 4
     else
       name := 'text';
-  while 2 >= 5 do
+  while 'True' do
   begin
     x:=3.3 / 3;
   end;

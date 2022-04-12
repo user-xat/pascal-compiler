@@ -1,0 +1,16 @@
+program myprog;
+var x,y,z:real;
+  a,b,i:integer;
+  flag:boolean;
+
+begin
+  x:=0;
+  y := 1.4005;
+  for x := 1 to 10 do
+    a := a + i;
+  for i := 1.4 to 'end' do
+    a := xed + i;
+  repeat
+    b:= b + 1
+  until 'something' > 10;
+end.

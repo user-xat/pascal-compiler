@@ -2,7 +2,7 @@
 #ifndef CPARSER_H
 #define CPARSER_H
 
-#include "IDataType.h"
+#include "CScopeStack.h"
 #include "CIntType.h"
 #include "CRealType.h"
 #include "CStringType.h"
@@ -16,12 +16,15 @@ class CParser {
 private:
 	CLexerPtr m_lexer;
 	CTokenPtr m_cur_token;
+	CScopeStackPtr m_scopes;
 
 public:
 	CParser(const std::string &filepath);
 	void Parse();
 private:
 	bool GetNextToken();
+	void Error(const std::string& message);
+	void Error(const EDataType type);
 	void Accept(ESymbol symbol);
 	bool CheckTokenType(ESymbol type) const;
 	bool CheckKeyword(ESymbol keyword) const;
@@ -44,17 +47,17 @@ private:
 	void Statement(const CSet& followers);
 	void ConditionStatement(const CSet& followers);
 	void AssignmentStatement(const CSet& followers);
-	void Variable(const CSet& followers);
+	IDataTypePtr Variable(const CSet& followers);
 	void LoopStatement(const CSet& followers);
 	void LoopWithPrecondition(const CSet& followers);
 	void LoopWithPostcondition(const CSet& followers);
 	void LoopWithParameter(const CSet& followers);
-	void Expression(const CSet& followers);
+	IDataTypePtr Expression(const CSet& followers);
 	bool RelationOperation(const CSet& followers);
-	void SimpleExpression(const CSet& followers);
-	void Term(const CSet& followers);
+	IDataTypePtr SimpleExpression(const CSet& followers);
+	IDataTypePtr Term(const CSet& followers);
 	bool MultiplicativeOperation(const CSet& followers);
-	void Factor(const CSet& followers);
+	IDataTypePtr Factor(const CSet& followers);
 	void FunctionNotation(const CSet& followers);
 	void ActualParameter();
 	const std::map<ESymbol, std::string> m_key_words = {

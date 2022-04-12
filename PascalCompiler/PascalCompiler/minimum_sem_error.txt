@@ -10,15 +10,15 @@ var
 
 begin
   // some comment here
-  a:= 10 - 3;
-  b := 2 *(3 + 4);
-  c:=a*b;
-  x:= 5.65 /2.1;
+  a:= True;
+  b := 2 *(3.0 + 4);
+  c:=a*name;
+  x:= 5.65 / True;
   { and
   here
   }
-  name :='some string';
-  flag:= True;
+  name :=+'some string';
+  flag:= 3;
   flag := False;
   (* the end of
   the program *)

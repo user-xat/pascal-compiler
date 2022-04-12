@@ -1,0 +1,15 @@
+program myprog;
+var x,y,z:real;
+  a,b,i:integer;
+
+begin
+  x:=0;
+  y := 1.4005;
+  for i := 1 to 10 do
+    a := a + i;
+  for i := 1 to 10 do
+    a := a + i;
+  repeat
+    b:= b + 1
+  until b > 10;
+end.

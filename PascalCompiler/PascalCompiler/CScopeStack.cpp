@@ -1,9 +1,6 @@
 #include "CScopeStack.h"
 
-CScopeStack::CScopeStack()
-{
-	m_current = std::make_shared<CScope>(nullptr);
-}
+CScopeStack::CScopeStack() : m_current{ nullptr } {}
 
 void CScopeStack::Push()
 {
@@ -13,16 +10,36 @@ void CScopeStack::Push()
 
 bool CScopeStack::Pop()
 {
-	if (m_current->m_parent != nullptr) {
+	if (m_current != nullptr) {
 		m_current = m_current->m_parent;
 		return true;
 	}
 	return false;
 }
 
-bool CScopeStack::AddIdent(const std::string ident, const IDataTypePtr type) const
+bool CScopeStack::AddIdent(const std::string &ident, const IDataTypePtr &type) const
 {
+	if (m_current == nullptr)
+		return false;
 	return m_current->AddIdent(ident, type);
+}
+
+void CScopeStack::AccumulateIdent(const std::string& ident)
+{
+	m_accumulator.push_back(ident);
+}
+
+void CScopeStack::ReleaseIdent(const IDataTypePtr& type)
+{
+	for (std::string& ident : m_accumulator) {
+		AddIdent(ident, type);
+	}
+	m_accumulator.clear();
+}
+
+void CScopeStack::ClearAccum()
+{
+	m_accumulator.clear();
 }
 
 bool CScopeStack::Contain(const std::string& ident) const
@@ -38,10 +55,10 @@ IDataTypePtr CScopeStack::GetIdentType(const std::string& ident) const
 {
 	IDataTypePtr type;
 	CScopePtr ref = m_current;
-	do
+	while (type == nullptr && ref != nullptr)
 	{
 		type = ref->GetIdentType(ident);
 		ref = ref->m_parent;
-	} while (type == nullptr && ref != nullptr);
+	}
 	return type;
 }

@@ -2,6 +2,7 @@
 
 CParser::CParser(const std::string& filepath) {
 	m_lexer = std::make_unique<CLexer>(filepath);
+	m_scopes = std::make_unique<CScopeStack>();
 }
 
 void CParser::Parse()
@@ -13,6 +14,39 @@ void CParser::Parse()
 bool CParser::GetNextToken() {
 	m_cur_token = m_lexer->GetNextToken();
 	return true;
+}
+
+void CParser::Error(const std::string& message)
+{
+	m_lexer->ThrowError(message);
+}
+
+void CParser::Error(const EDataType type)
+{
+	std::string mes;
+	switch (type)
+	{
+	case EDataType::INTEGER:
+		mes += "Expected integer type";
+		break;
+	case EDataType::REAL:
+		mes += "Expected real type";
+		break;
+	case EDataType::BOOLEAN:
+		mes += "Expected boolean type";
+		break;
+	case EDataType::STRING:
+		mes += "Expected string type";
+		break;
+	case EDataType::FUNCTION:
+		break;
+	case EDataType::ERROR:
+		mes += "Type error";
+		break;
+	default:
+		break;
+	}
+	m_lexer->ThrowError(mes);
 }
 
 void CParser::Accept(ESymbol symbol)
@@ -67,13 +101,13 @@ bool CParser::CheckTokenType(ESymbol type) const
 
 bool CParser::CheckKeyword(ESymbol keyword) const
 {
-	return CheckTokenType(ESymbol::KEYWORD_TOKEN) 
+	return CheckTokenType(ESymbol::KEYWORD_TOKEN)
 		&& dynamic_cast<CKeywordToken*>(m_cur_token.get())->GetKeyword() == keyword;
 }
 
 bool CParser::CheckConstVariant(ESymbol variant) const
 {
-	return CheckTokenType(ESymbol::CONST_TOKEN) 
+	return CheckTokenType(ESymbol::CONST_TOKEN)
 		&& dynamic_cast<CConstToken*>(m_cur_token.get())->GetVariant()->GetType() == variant;
 }
 
@@ -106,18 +140,25 @@ void CParser::Type(const CSet& followers) {
 			ESymbol::BOOLEAN_KEYWORD})))
 	{
 		if (CheckKeyword(ESymbol::INTEGER_KEYWORD)) {
+			m_scopes->ReleaseIdent(m_base_types.find(EDataType::INTEGER)->second);
 			Accept(ESymbol::INTEGER_KEYWORD);
 		}
 		else if (CheckKeyword(ESymbol::REAL_KEYWORD)) {
+			m_scopes->ReleaseIdent(m_base_types.find(EDataType::REAL)->second);
 			Accept(ESymbol::REAL_KEYWORD);
 		}
 		else if (CheckKeyword(ESymbol::STRING_KEYWORD)) {
+			m_scopes->ReleaseIdent(m_base_types.find(EDataType::STRING)->second);
 			Accept(ESymbol::STRING_KEYWORD);
 		}
 		else if (CheckKeyword(ESymbol::BOOLEAN_KEYWORD)) {
+			m_scopes->ReleaseIdent(m_base_types.find(EDataType::BOOLEAN)->second);
 			Accept(ESymbol::BOOLEAN_KEYWORD);
 		}
 		EndSkipErr(followers);
+	}
+	else {
+		m_scopes->ReleaseIdent(m_base_types.find(EDataType::ERROR)->second);
 	}
 }
 
@@ -152,13 +193,24 @@ void CParser::EndSkipErr(const CSet& followers) {
 // <program>:: = [program <name>;]<block>.
 void CParser::Program()
 {
+	// create fictious scope
+	m_scopes->Push();
+	m_scopes->AddIdent("integer", m_base_types.find(EDataType::INTEGER)->second);
+	m_scopes->AddIdent("boolean", m_base_types.find(EDataType::BOOLEAN)->second);
+	m_scopes->AddIdent("real", m_base_types.find(EDataType::REAL)->second);
+	m_scopes->AddIdent("string", m_base_types.find(EDataType::INTEGER)->second);
+
+	// create program scope
+	m_scopes->Push();
 	if (CheckKeyword(ESymbol::PROGRAM_KEYWORD)) {
-		Accept(ESymbol::PROGRAM_KEYWORD);		// get program's name
+		Accept(ESymbol::PROGRAM_KEYWORD);
 		Accept(ESymbol::IDENT_TOKEN);
 		Accept(ESymbol::SEMICOLON_KEYWORD);
 	}
 	Block(CSet(std::set<ESymbol> {ESymbol::DOT_KEYWORD}));
 	Accept(ESymbol::DOT_KEYWORD);
+	m_scopes->Pop(); // destroy program scope
+	m_scopes->Pop(); // destroy fictious scope
 }
 
 // <block>::=<type section><variable section><function section><compound statement>
@@ -185,22 +237,21 @@ void CParser::Block(const CSet& followers) {
 
 // <type section>::=<empty>|type<type definition>;{<type definition>;}
 void CParser::TypeSection(const CSet& followers) {
-	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::TYPE_KEYWORD}), followers);
-	if (Contains(CSet(std::set<ESymbol> {ESymbol::TYPE_KEYWORD}))) {
-		Accept(ESymbol::TYPE_KEYWORD);
-		do
-		{
-			TypeDefinition(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD}));
-			Accept(ESymbol::SEMICOLON_KEYWORD);
-		} while (CheckTokenType(ESymbol::IDENT_TOKEN));
-		EndSkipErr(followers);
-	}
+	Accept(ESymbol::TYPE_KEYWORD);
+	do
+	{
+		TypeDefinition(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD}));
+		Accept(ESymbol::SEMICOLON_KEYWORD);
+	} while (CheckTokenType(ESymbol::IDENT_TOKEN));
+	EndSkipErr(followers);
 }
 
 // <type definition>::=<name>=<type>
 void CParser::TypeDefinition(const CSet& followers) {
 	BeginSkipErr(std::set<ESymbol> {ESymbol::IDENT_TOKEN}, followers);
 	if (CheckTokenType(ESymbol::IDENT_TOKEN)) {
+
+		m_scopes->AccumulateIdent(dynamic_cast<CIdentToken*>(m_cur_token.get())->GetIdentifier());
 		Accept(ESymbol::IDENT_TOKEN);
 		Accept(ESymbol::COP_EQ_KEYWORD);
 		Type(followers);
@@ -210,26 +261,26 @@ void CParser::TypeDefinition(const CSet& followers) {
 
 // <variable section>::= var <description of variables>;{<description of variables>;}|<empty>
 void CParser::VariableSection(const CSet& followers) {
-	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::VAR_KEYWORD}), followers);
-	if (Contains(CSet(std::set<ESymbol> {ESymbol::VAR_KEYWORD}))) {
-		Accept(ESymbol::VAR_KEYWORD);
-		do
-		{
-			DescriptionOfVariables(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD}));
-			Accept(ESymbol::SEMICOLON_KEYWORD);
-			//BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN}), followers);
-		} while (CheckTokenType(ESymbol::IDENT_TOKEN));
-		EndSkipErr(followers);
-	}
+	Accept(ESymbol::VAR_KEYWORD);
+	do
+	{
+		DescriptionOfVariables(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD}));
+		Accept(ESymbol::SEMICOLON_KEYWORD);
+	} while (CheckTokenType(ESymbol::IDENT_TOKEN));
+	EndSkipErr(followers);
 }
 
 // <description of variables>::=<name>{, <name>}:<type>
 void CParser::DescriptionOfVariables(const CSet& followers) {
 	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN}), followers);
 	if (CheckTokenType(ESymbol::IDENT_TOKEN)) {
+
+		m_scopes->AccumulateIdent(dynamic_cast<CIdentToken*>(m_cur_token.get())->GetIdentifier());
 		Accept(ESymbol::IDENT_TOKEN);
 		while (CheckKeyword(ESymbol::COMMA_KEYWORD)) {
 			GetNextToken();
+
+			m_scopes->AccumulateIdent(dynamic_cast<CIdentToken*>(m_cur_token.get())->GetIdentifier());
 			Accept(ESymbol::IDENT_TOKEN);
 		}
 		Accept(ESymbol::COLON_KEYWORD);
@@ -243,10 +294,10 @@ void CParser::FunctionSection(const CSet& followers) {
 	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::FUNCTION_KEYWORD}), followers);
 	while (Contains(CSet(std::set<ESymbol> {ESymbol::FUNCTION_KEYWORD}))) {
 		Accept(ESymbol::FUNCTION_KEYWORD);
-		FunctionHeader(followers + 
-			CSet(std::set<ESymbol> {ESymbol::TYPE_KEYWORD, 
-				ESymbol::VAR_KEYWORD, 
-				ESymbol::FUNCTION_KEYWORD, 
+		FunctionHeader(followers +
+			CSet(std::set<ESymbol> {ESymbol::TYPE_KEYWORD,
+				ESymbol::VAR_KEYWORD,
+				ESymbol::FUNCTION_KEYWORD,
 				ESymbol::BEGIN_KEYWORD}));
 		Block(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD}));
 		Accept(ESymbol::SEMICOLON_KEYWORD);
@@ -320,6 +371,8 @@ void CParser::CompoundStatement(const CSet& followers) {
 // <statement>::=<assignment statement> | <compound statement> | 
 // <condition statement> | <loop statement> | <empty statement>
 void CParser::Statement(const CSet& followers) {
+	if (CheckKeyword(ESymbol::END_KEYWORD) || CheckKeyword(ESymbol::UNTIL_KEYWORD))
+		return;
 	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN,
 		ESymbol::BEGIN_KEYWORD,
 		ESymbol::IF_KEYWORD,
@@ -359,7 +412,12 @@ void CParser::ConditionStatement(const CSet& followers) {
 	if (Contains(CSet(std::set<ESymbol> {ESymbol::IF_KEYWORD})))
 	{
 		Accept(ESymbol::IF_KEYWORD);
-		Expression(followers + CSet(std::set<ESymbol> {ESymbol::THEN_KEYWORD, ESymbol::ELSE_KEYWORD}));
+
+		IDataTypePtr type = Expression(followers + CSet(std::set<ESymbol> {ESymbol::THEN_KEYWORD, ESymbol::ELSE_KEYWORD}));
+		if (type->GetType() != EDataType::BOOLEAN) {
+			Error(EDataType::BOOLEAN);
+		}
+
 		Accept(ESymbol::THEN_KEYWORD);
 		Statement(followers + CSet(std::set<ESymbol> {ESymbol::ELSE_KEYWORD}));
 		if (CheckKeyword(ESymbol::ELSE_KEYWORD)) {
@@ -372,23 +430,40 @@ void CParser::ConditionStatement(const CSet& followers) {
 
 // <assignment statement>::=<variable>:=<выражение> | <имя функции>:=<выражение>
 void CParser::AssignmentStatement(const CSet& followers) {
-	Variable(followers + CSet(std::set<ESymbol> {ESymbol::AOP_ASSIGN_KEYWORD}));
+	IDataTypePtr var_type = Variable(followers + CSet(std::set<ESymbol> {ESymbol::AOP_ASSIGN_KEYWORD}));
 	Accept(ESymbol::AOP_ASSIGN_KEYWORD);
-	Expression(followers);
+	IDataTypePtr exp_type = Expression(followers);
+
+	if (var_type->GetType() != exp_type->GetType()) {
+		if (!(var_type->GetType() == EDataType::REAL && exp_type->GetType() == EDataType::INTEGER))
+			Error(var_type->GetType());
+	}
 }
 
 // <переменная>::=<полная переменная>|<компонента переменной> | <указанная переменная>
 // <обозначение функции>::=<имя функции>|<имя функции> (<фактический параметр>{, <фактический параметр>})
-void CParser::Variable(const CSet& followers)
+IDataTypePtr CParser::Variable(const CSet& followers)
 {
+	IDataTypePtr variable_type = nullptr;
 	BeginSkipErr(std::set<ESymbol> {ESymbol::IDENT_TOKEN}, followers);
 	if (CheckTokenType(ESymbol::IDENT_TOKEN)) {
+		std::string ident_name = dynamic_cast<CIdentToken*>(m_cur_token.get())->GetIdentifier();
+		IDataTypePtr ident_type = m_scopes->GetIdentType(ident_name);
+		if (ident_type != nullptr) {
+			variable_type = ident_type;
+		}
+		else {
+			variable_type = m_base_types.find(EDataType::ERROR)->second;
+			m_scopes->AddIdent(ident_name, variable_type);
+		}
+
 		Accept(ESymbol::IDENT_TOKEN);
 		/*while (CheckKeyword(ESymbol::OPENING_BRACKET_KEYWORD)) {
 
 		}*/
 		EndSkipErr(followers);
 	}
+	return variable_type;
 }
 
 // <loop statement>::=<loop with precondition>|
@@ -410,7 +485,12 @@ void CParser::LoopWithPrecondition(const CSet& followers) {
 	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::WHILE_KEYWORD}), followers);
 	if (Contains(CSet(std::set<ESymbol> {ESymbol::WHILE_KEYWORD}))) {
 		Accept(ESymbol::WHILE_KEYWORD);
-		Expression(followers + CSet(std::set<ESymbol> {ESymbol::DO_KEYWORD}));
+
+		IDataTypePtr type = Expression(followers + CSet(std::set<ESymbol> {ESymbol::DO_KEYWORD}));
+		if (type->GetType() != m_base_types.find(EDataType::BOOLEAN)->second->GetType()) {
+			Error(EDataType::BOOLEAN);
+		}
+
 		Accept(ESymbol::DO_KEYWORD);
 		Statement(followers);
 		EndSkipErr(followers);
@@ -428,7 +508,12 @@ void CParser::LoopWithPostcondition(const CSet& followers) {
 			Statement(followers + CSet(std::set<ESymbol> {ESymbol::SEMICOLON_KEYWORD, ESymbol::UNTIL_KEYWORD}));
 		}
 		Accept(ESymbol::UNTIL_KEYWORD);
-		Expression(followers);
+
+		IDataTypePtr type = Expression(followers);
+		if (type->GetType() != m_base_types.find(EDataType::BOOLEAN)->second->GetType()) {
+			Error(EDataType::BOOLEAN);
+		}
+
 		EndSkipErr(followers);
 	}
 }
@@ -439,16 +524,36 @@ void CParser::LoopWithParameter(const CSet& followers) {
 	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::FOR_KEYWORD}), followers);
 	if (Contains(CSet(std::set<ESymbol> {ESymbol::FOR_KEYWORD}))) {
 		Accept(ESymbol::FOR_KEYWORD);
-		Accept(ESymbol::IDENT_TOKEN);
+
+		// IDataTypePtr ident_type = m_scopes->GetIdentType(dynamic_cast<CIdentToken*>(m_cur_token.get())->GetIdentifier());
+		// if (ident_type == nullptr)
+		IDataTypePtr ident_type = Variable(followers + CSet(std::set<ESymbol> {ESymbol::AOP_ASSIGN_KEYWORD,
+			ESymbol::TO_KEYWORD, ESymbol::DOWNTO_KEYWORD, ESymbol::DO_KEYWORD}));
+		if (ident_type->GetType() != EDataType::INTEGER) {
+			Error("Parameter of cycle must be integer");
+		}
+
 		Accept(ESymbol::AOP_ASSIGN_KEYWORD);
-		Expression(followers + CSet(std::set<ESymbol> {ESymbol::TO_KEYWORD, ESymbol::DOWNTO_KEYWORD, ESymbol::DO_KEYWORD}));
+
+		IDataTypePtr exp_type = Expression(followers + CSet(std::set<ESymbol> {ESymbol::TO_KEYWORD, ESymbol::DOWNTO_KEYWORD, ESymbol::DO_KEYWORD}));
+
+		if (ident_type->GetType() != exp_type->GetType()) {
+			//Error("Types conflict");
+			Error(ident_type->GetType());
+		}
+
 		if (CheckKeyword(ESymbol::DOWNTO_KEYWORD)) {
 			Accept(ESymbol::DOWNTO_KEYWORD);
 		}
 		else {
 			Accept(ESymbol::TO_KEYWORD);
 		}
-		Expression(followers + CSet(std::set<ESymbol> {ESymbol::DO_KEYWORD}));
+
+		exp_type = Expression(followers + CSet(std::set<ESymbol> {ESymbol::DO_KEYWORD}));
+		if (ident_type->GetType() != exp_type->GetType()) {
+			Error("Types conflict");
+		}
+
 		Accept(ESymbol::DO_KEYWORD);
 		Statement(followers);
 		EndSkipErr(followers);
@@ -456,24 +561,51 @@ void CParser::LoopWithParameter(const CSet& followers) {
 
 }
 
-// <expression>::=<simple expression>{<relation operation><simple expression>}
-void CParser::Expression(const CSet& followers) {
-	SimpleExpression(followers +
+// <expression>::=<simple expression>[<relation operation><simple expression>]
+IDataTypePtr CParser::Expression(const CSet& followers) 
+{
+	IDataTypePtr exp1_type = SimpleExpression(followers +
 		CSet(std::set<ESymbol> {ESymbol::COP_EQ_KEYWORD,
 			ESymbol::COP_NE_KEYWORD,
 			ESymbol::COP_LT_KEYWORD,
 			ESymbol::COP_LE_KEYWORD,
 			ESymbol::COP_GE_KEYWORD,
 			ESymbol::COP_GT_KEYWORD}));
-	while (RelationOperation(followers)) {
-		SimpleExpression(followers +
+	if (RelationOperation(followers))
+	{
+		ESymbol comp_op = dynamic_cast<CKeywordToken*>(m_cur_token.get())->GetKeyword();
+		GetNextToken();
+		IDataTypePtr exp2_type = SimpleExpression(followers +
 			CSet(std::set<ESymbol> {ESymbol::COP_EQ_KEYWORD,
 				ESymbol::COP_NE_KEYWORD,
 				ESymbol::COP_LT_KEYWORD,
 				ESymbol::COP_LE_KEYWORD,
 				ESymbol::COP_GE_KEYWORD,
 				ESymbol::COP_GT_KEYWORD}));
+
+		/*if (exp1_type->GetType() != exp2_type->GetType()) {
+			Error(EDataType::BOOLEAN);
+		}*/
+		if (comp_op == ESymbol::COP_EQ_KEYWORD || comp_op == ESymbol::COP_NE_KEYWORD) {
+			if (exp1_type->GetType() != exp2_type->GetType()) {
+				if (!(exp1_type->GetType() == EDataType::REAL && exp2_type->GetType() == EDataType::INTEGER
+					|| exp1_type->GetType() == EDataType::INTEGER && exp2_type->GetType() == EDataType::REAL))
+					Error(exp1_type->GetType());
+			}
+		}
+		else {
+			if (exp1_type->GetType() == EDataType::STRING || exp2_type->GetType() == EDataType::STRING)
+			{
+				Error("Unexepted string type");
+			}
+			else if (exp1_type->GetType() == EDataType::BOOLEAN || exp2_type->GetType() == EDataType::BOOLEAN) {
+				Error("Unexepted boolean type");
+			}
+		}
+		
+		exp1_type = m_base_types.find(EDataType::BOOLEAN)->second;
 	}
+	return exp1_type;
 }
 
 // <relation operation>::= = | <> | < | <= | >= | >
@@ -481,91 +613,140 @@ bool CParser::RelationOperation(const CSet& followers) {
 	bool result = false;
 
 	if (CheckKeyword(ESymbol::COP_EQ_KEYWORD)) {
-		Accept(ESymbol::COP_EQ_KEYWORD);
+		//Accept(ESymbol::COP_EQ_KEYWORD);
 		result = true;
 	}
 	else if (CheckKeyword(ESymbol::COP_NE_KEYWORD)) {
-		Accept(ESymbol::COP_NE_KEYWORD);
+		//Accept(ESymbol::COP_NE_KEYWORD);
 		result = true;
 	}
 	else if (CheckKeyword(ESymbol::COP_LT_KEYWORD)) {
-		Accept(ESymbol::COP_LT_KEYWORD);
+		//Accept(ESymbol::COP_LT_KEYWORD);
 		result = true;
 	}
 	else if (CheckKeyword(ESymbol::COP_LE_KEYWORD)) {
-		Accept(ESymbol::COP_LE_KEYWORD);
+		//Accept(ESymbol::COP_LE_KEYWORD);
 		result = true;
 	}
 	else if (CheckKeyword(ESymbol::COP_GE_KEYWORD)) {
-		Accept(ESymbol::COP_GE_KEYWORD);
+		//Accept(ESymbol::COP_GE_KEYWORD);
 		result = true;
 	}
 	else if (CheckKeyword(ESymbol::COP_GT_KEYWORD)) {
-		Accept(ESymbol::COP_GT_KEYWORD);
+		//Accept(ESymbol::COP_GT_KEYWORD);
 		result = true;
 	}
+
 	return result;
 }
 
 
 // <simple expression>::=<+|-><term> {<+|-|or><term>}
-void CParser::SimpleExpression(const CSet& followers) {
+IDataTypePtr CParser::SimpleExpression(const CSet& followers) {
+	bool add_operation = false;
 	if (CheckKeyword(ESymbol::AOP_SUM_KEYWORD)) {
+		add_operation = true;
 		GetNextToken();
 	}
 	else if (CheckKeyword(ESymbol::AOP_SUB_KEYWORD)) {
+		add_operation = true;
 		GetNextToken();
 	}
-	Term(followers + CSet(std::set<ESymbol> {ESymbol::AOP_SUM_KEYWORD, ESymbol::AOP_SUB_KEYWORD, ESymbol::LOP_OR_KEYWORD}));
+
+	IDataTypePtr term1_type = Term(followers + CSet(std::set<ESymbol> {ESymbol::AOP_SUM_KEYWORD, ESymbol::AOP_SUB_KEYWORD, ESymbol::LOP_OR_KEYWORD}));
+
+	if (term1_type->GetType() != EDataType::INTEGER && term1_type->GetType() != EDataType::REAL) {
+		if (add_operation) {
+			Error("Unexpected operation");
+		}
+	}
+
 	while (CheckKeyword(ESymbol::AOP_SUM_KEYWORD) || CheckKeyword(ESymbol::AOP_SUB_KEYWORD) || CheckKeyword(ESymbol::LOP_OR_KEYWORD))
 	{
+		ESymbol operation = dynamic_cast<CKeywordToken*>(m_cur_token.get())->GetKeyword();
+		if (term1_type->GetType() == EDataType::BOOLEAN && operation != ESymbol::LOP_OR_KEYWORD) {
+			Error("Incorrect operation type! Need 'or' operator.");
+		}
+
 		GetNextToken();
-		Term(followers + CSet(std::set<ESymbol> {ESymbol::AOP_SUM_KEYWORD, ESymbol::AOP_SUB_KEYWORD, ESymbol::LOP_OR_KEYWORD}));
+		IDataTypePtr term2_type = Term(followers + CSet(std::set<ESymbol> {ESymbol::AOP_SUM_KEYWORD, ESymbol::AOP_SUB_KEYWORD, ESymbol::LOP_OR_KEYWORD}));
+
+		if (term1_type->GetType() != term2_type->GetType()) {
+			if (!(term1_type->GetType() == EDataType::REAL && term2_type->GetType() == EDataType::INTEGER
+				|| term1_type->GetType() == EDataType::INTEGER && term2_type->GetType() == EDataType::REAL))
+				Error(term1_type->GetType());
+			else if (term1_type->GetType() == EDataType::INTEGER) {
+				term1_type = term2_type;
+			}
+		}
 	}
+	return term1_type;
 }
 
 // <term>::=<factor>{<multiplicative operation><factor>}
-void CParser::Term(const CSet& followers) {
-	Factor(followers + CSet(std::set<ESymbol> {ESymbol::AOP_MULT_KEYWORD,
+IDataTypePtr CParser::Term(const CSet& followers) {
+	IDataTypePtr fact1_type = Factor(followers + CSet(std::set<ESymbol> {ESymbol::AOP_MULT_KEYWORD,
 		ESymbol::AOP_DIV_REAL_KEYWORD,
 		ESymbol::AOP_DIV_KEYWORD,
 		ESymbol::AOP_MOD_KEYWORD,
 		ESymbol::LOP_AND_KEYWORD}));
+	auto temp = fact1_type->GetType();
 	while (MultiplicativeOperation(followers +
 		CSet(std::set<ESymbol>{ESymbol::IDENT_TOKEN,
 			ESymbol::CONST_TOKEN,
 			ESymbol::OPENING_BRACKET_KEYWORD,
 			ESymbol::LOP_NOT_KEYWORD})))
 	{
-		Factor(followers + CSet(std::set<ESymbol> {ESymbol::AOP_MULT_KEYWORD,
+		ESymbol operation = dynamic_cast<CKeywordToken*>(m_cur_token.get())->GetKeyword();
+		if (fact1_type->GetType() == EDataType::BOOLEAN && operation != ESymbol::LOP_AND_KEYWORD) {
+			Error("Incorrect operation type! Need 'and' operator.");
+		}
+		else if (fact1_type->GetType() != EDataType::BOOLEAN && operation == ESymbol::LOP_AND_KEYWORD) {
+			Error(EDataType::BOOLEAN);
+		}
+
+
+		GetNextToken();
+
+		IDataTypePtr fact2_type = Factor(followers + CSet(std::set<ESymbol> {ESymbol::AOP_MULT_KEYWORD,
 			ESymbol::AOP_DIV_REAL_KEYWORD,
 			ESymbol::AOP_DIV_KEYWORD,
 			ESymbol::AOP_MOD_KEYWORD,
 			ESymbol::LOP_AND_KEYWORD}));
+		temp = fact2_type->GetType();
+		if (fact1_type->GetType() != fact2_type->GetType()) {
+			if (!(fact1_type->GetType() == EDataType::REAL && fact2_type->GetType() == EDataType::INTEGER
+				|| fact1_type->GetType() == EDataType::INTEGER && fact2_type->GetType() == EDataType::REAL))
+				Error(fact1_type->GetType());
+			else if (fact1_type->GetType() == EDataType::INTEGER) {
+				fact1_type = fact2_type;
+			}
+		}
 	}
+	return fact1_type;
 }
 
 // <multiplicative operation>::= *|/|div|mod|and
 bool CParser::MultiplicativeOperation(const CSet& followers) {
 	bool result = false;
 	if (CheckKeyword(ESymbol::AOP_MULT_KEYWORD)) {
-		Accept(ESymbol::AOP_MULT_KEYWORD);
+		//Accept(ESymbol::AOP_MULT_KEYWORD);
 		result = true;
 	}
 	else if (CheckKeyword(ESymbol::AOP_DIV_REAL_KEYWORD)) {
-		Accept(ESymbol::AOP_DIV_REAL_KEYWORD);
+		//Accept(ESymbol::AOP_DIV_REAL_KEYWORD);
 		result = true;
 	}
 	else if (CheckKeyword(ESymbol::AOP_DIV_KEYWORD)) { // div
-		Accept(ESymbol::AOP_DIV_KEYWORD);
+		//Accept(ESymbol::AOP_DIV_KEYWORD);
 		result = true;
 	}
 	else if (CheckKeyword(ESymbol::AOP_MOD_KEYWORD)) { // mod
-		Accept(ESymbol::AOP_MOD_KEYWORD);
+		//Accept(ESymbol::AOP_MOD_KEYWORD);
 		result = true;
 	}
 	else if (CheckKeyword(ESymbol::LOP_AND_KEYWORD)) {
-		Accept(ESymbol::LOP_AND_KEYWORD);
+		//Accept(ESymbol::LOP_AND_KEYWORD);
 		result = true;
 	}
 	return result;
@@ -573,8 +754,8 @@ bool CParser::MultiplicativeOperation(const CSet& followers) {
 
 // <factor>::=<переменная>|<константа без знака>|
 //	(<expression>) | <обозначение функции> | not <factor>
-void CParser::Factor(const CSet& followers) {
-
+IDataTypePtr CParser::Factor(const CSet& followers) {
+	IDataTypePtr fact_type = nullptr;
 	BeginSkipErr(CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN,
 		ESymbol::CONST_TOKEN,
 		ESymbol::OPENING_BRACKET_KEYWORD,
@@ -587,22 +768,43 @@ void CParser::Factor(const CSet& followers) {
 	{
 		if (CheckTokenType(ESymbol::IDENT_TOKEN)) {
 			// <переменная> | <function notation>
-			Variable(followers);
+			fact_type = Variable(followers);
 		}
 		else if (CheckTokenType(ESymbol::CONST_TOKEN)) {
+			ESymbol const_type = dynamic_cast<CConstToken*>(m_cur_token.get())->GetVariant()->GetType();
+			switch (const_type)
+			{
+			case ESymbol::INTEGER_VARIANT:
+				fact_type = m_base_types.find(EDataType::INTEGER)->second;
+				break;
+			case ESymbol::REAL_VARIANT:
+				fact_type = m_base_types.find(EDataType::REAL)->second;
+				break;
+			case ESymbol::STRING_VARIANT:
+				fact_type = m_base_types.find(EDataType::STRING)->second;
+				break;
+			case ESymbol::BOOLEAN_VARIANT:
+				fact_type = m_base_types.find(EDataType::BOOLEAN)->second;
+				break;
+			}
 			GetNextToken();
 		}
 		else if (CheckKeyword(ESymbol::OPENING_BRACKET_KEYWORD)) {
 			GetNextToken();
-			Expression(followers + CSet(std::set<ESymbol> {ESymbol::CLOSING_BRACKET_KEYWORD}));
+			fact_type = Expression(followers + CSet(std::set<ESymbol> {ESymbol::CLOSING_BRACKET_KEYWORD}));
+			auto temp = fact_type->GetType();
 			Accept(ESymbol::CLOSING_BRACKET_KEYWORD);
 		}
 		else if (CheckKeyword(ESymbol::LOP_NOT_KEYWORD)) {
 			GetNextToken();
-			Factor(followers);
+			fact_type = Factor(followers);
+			if (fact_type->GetType() != EDataType::BOOLEAN) {
+				Error(EDataType::BOOLEAN);
+			}
 		}
 		EndSkipErr(followers);
 	}
+	return fact_type;
 }
 // <переменная>:: = <имя>
 // <константа без знака>::=<число без знака>|<строка>

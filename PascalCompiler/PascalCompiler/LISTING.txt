@@ -1,93 +1,32 @@
 program myprog;
 var x,y,z:real;
-  a,:integer;
-    ^ ERROR
-      Expected token is not type of identificator
-            ^ ERROR
-              Unexpected token
-  b:=integer;
-
-function Sum(a,b: real): tuple;
-                         ^ ERROR
-                           Unexpected token
-var
-  in_x,in_b dfdfd :integer;
-            ^ ERROR
-              Expected token is :
-                  ^ ERROR
-                    Unexpected token
-  in_z: fdf real;
-        ^ ERROR
-          Unexpected token
+  a,b,i:integer;
   flag:boolean;
-begin
-  for i = 1 to 10 do
-    a := a + i;
-  in_x := a div 3;
-  in_b:= in_x ++ 32;
-               ^ ERROR
-                 Unexpected token
-  in_z:= in_b // 2.0;
-  Result := -in_z + in_b;
-  ^ ERROR
-    Unexpected token
-end;
-^ ERROR
-  Unexpected token
 
-function +(a,b: real): real;
-         ^ ERROR
-           Unexpected token
+begin
+  x:=0;
+  y := 1.4005;
+  for x := 1 to 10 do
+        ^ ERROR
+          Parameter of cycle must be integer
              ^ ERROR
-               Unexpected token
-                    ^ ERROR
-                      Unexpected token
-varr
-^ ERROR
-  Unexpected token
-  in_a,i:integer;
-  in_z:real;
-begin
-  for i = 1 to 10 do
-    in_a := a + i;
-  in_a += a div 3;
-       ^ ERROR
-         Unexpected token
-  in_z:= b // 2.0;
-      ^ ERROR
-        Unexpected token
-  Result := in_a / in_z;
-end;
-^ ERROR
-  Unexpected token
-
-begin
-  x:=fdfdf 0.5;
-           ^ ERROR
-             Unexpected token
-  and y := 1.4005;
-  ^ ERROR
-    Unexpected token
-  //z :=Sum(x,y);
-  for dfdf var i := sfd to 10 fdf do adf
-                 ^ ERROR
-                   Unexpected token
-                              ^ ERROR
-                                Unexpected token
+               Expected real type
+                   ^ ERROR
+                     Types conflict
     a := a + i;
-    ^ ERROR
-      Unexpected token
-  repeat dfsf
-    b:= b + 1 fdfd;
-    ^ ERROR
-      Unexpected token
-              ^ ERROR
-                Unexpected token
-  until b := 10;
-  ^ ERROR
-    Unexpected token
-          ^ ERROR
-            Unexpected token
+  for i := 1.4 to 'end' do
+               ^ ERROR
+                 Expected integer type
+                        ^ ERROR
+                          Types conflict
+    a := xed + i;
+                ^ ERROR
+                  Type error
+                ^ ERROR
+                  Expected integer type
+  repeat
+    b:= b + 1
+  until 'something' > 10;
+                        ^ ERROR
+                          Unexepted string type
 end.
-^ ERROR
-  Unexpected token
