@@ -112,22 +112,7 @@ bool CParser::CheckConstVariant(ESymbol variant) const
 }
 
 void CParser::Type(const CSet& followers) {
-	/*if (m_cur_token == nullptr) {
-		throw "Current token is nullptr";
-	}
-	else if (m_cur_token->GetType() != ESymbol::KEYWORD_TOKEN) {
-		m_lexer->ThrowError("Expected token is not keyword");
-	}
-	else {
-		CKeywordToken* token = dynamic_cast<CKeywordToken*>(m_cur_token.get());
-		if (token->GetKeyword() != ESymbol::INTEGER_KEYWORD && token->GetKeyword() != ESymbol::REAL_KEYWORD
-			&& token->GetKeyword() != ESymbol::STRING_KEYWORD && token->GetKeyword() != ESymbol::BOOLEAN_KEYWORD)
-		{
-			m_lexer->ThrowError("Expected token is not a type");
-		}
-		GetNextToken();
-	}*/
-	BeginSkipErr(
+	/*BeginSkipErr(
 		CSet(std::set<ESymbol> {ESymbol::INTEGER_KEYWORD,
 			ESymbol::REAL_KEYWORD,
 			ESymbol::STRING_KEYWORD,
@@ -155,6 +140,25 @@ void CParser::Type(const CSet& followers) {
 			m_scopes->ReleaseIdent(m_base_types.find(EDataType::BOOLEAN)->second);
 			Accept(ESymbol::BOOLEAN_KEYWORD);
 		}
+		EndSkipErr(followers);
+	}
+	else {
+		m_scopes->ReleaseIdent(m_base_types.find(EDataType::ERROR)->second);
+	}*/
+
+	BeginSkipErr(
+		CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN}), followers);
+	if (Contains(
+		CSet(std::set<ESymbol> {ESymbol::IDENT_TOKEN})))
+	{
+		std::string identifier = dynamic_cast<CIdentToken*>(m_cur_token.get())->GetIdentifier();
+		IDataTypePtr type = m_scopes->GetIdentType(identifier);
+		if (type == nullptr) {
+			type = m_base_types.find(EDataType::ERROR)->second;
+		}
+						
+		m_scopes->ReleaseIdent(type);
+		Accept(ESymbol::IDENT_TOKEN);
 		EndSkipErr(followers);
 	}
 	else {
@@ -198,7 +202,7 @@ void CParser::Program()
 	m_scopes->AddIdent("integer", m_base_types.find(EDataType::INTEGER)->second);
 	m_scopes->AddIdent("boolean", m_base_types.find(EDataType::BOOLEAN)->second);
 	m_scopes->AddIdent("real", m_base_types.find(EDataType::REAL)->second);
-	m_scopes->AddIdent("string", m_base_types.find(EDataType::INTEGER)->second);
+	m_scopes->AddIdent("string", m_base_types.find(EDataType::STRING)->second);
 
 	// create program scope
 	m_scopes->Push();

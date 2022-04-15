@@ -37,10 +37,10 @@ private:
 	bool IsNumber(std::string num, T& value);
 	std::string GenerateErrorMessage(int line_num);
 	const std::map<std::string, ESymbol> key_words = {
-		{"integer", ESymbol::INTEGER_KEYWORD},
+		/*{"integer", ESymbol::INTEGER_KEYWORD},
 		{"real", ESymbol::REAL_KEYWORD},
 		{"string", ESymbol::STRING_KEYWORD},
-		{"boolean", ESymbol::BOOLEAN_KEYWORD},
+		{"boolean", ESymbol::BOOLEAN_KEYWORD},*/
 		{":=", ESymbol::AOP_ASSIGN_KEYWORD},
 		{"+", ESymbol::AOP_SUM_KEYWORD},
 		{"-", ESymbol::AOP_SUB_KEYWORD},

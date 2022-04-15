@@ -1,25 +1,32 @@
 program myprog;
-type
-  myint = integer;
-  str=string;
-var
-  a,b,c:integer;
-  name:string;
-  x:real;
+var x,y,z:real;
+  a,b,i:integer;
   flag:boolean;
 
 begin
-  // some comment here
-  a:= 10 - 3;
-  b := 2 *(3 + 4);
-  c:=a*b;
-  x:= 5.65 /2.1;
-  { and
-  here
-  }
-  name :='some string';
-  flag:= True;
-  flag := False;
-  (* the end of
-  the program *)
+  x:=0;
+  y := 1.4005;
+  for x := 1 to 10 do
+        ^ ERROR
+          Parameter of cycle must be integer
+             ^ ERROR
+               Expected real type
+                   ^ ERROR
+                     Types conflict
+    a := a + i;
+  for i := 1.4 to 'end' do
+               ^ ERROR
+                 Expected integer type
+                        ^ ERROR
+                          Types conflict
+    a := xed + i;
+                ^ ERROR
+                  Type error
+                ^ ERROR
+                  Expected integer type
+  repeat
+    b:= b + 1
+  until 'something' > 10;
+                        ^ ERROR
+                          Unexepted string type
 end.
