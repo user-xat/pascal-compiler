@@ -1,15 +1,27 @@
 program myprog;
-var x,y,z:real;
-  a,:integer;
-  b:=integer;
+type
+  myint = integer;
+  str=string;
+var
+  a,b,c:integer;
+  name:string;
+  x:real;
+  flag:boolean;
 
 begin
-  x:=fdfdf 0.5;
-  and y := 1.4005;
-  //z :=Sum(x,y);
-  for dfdf var i := sfd to 10 fdf do adf
-    a := a + i;
-  repeat dfsf
-    b:= b + 1 fdfd;
-  until b := 10;
+  // some comment here
+  a:= 10 % 3;
+  ?
+  b := 2 *(3 + 4);
+  c:=a*b;
+  x:= 5.65 & 2.1;
+  { and
+  here
+  }
+  name :='';
+  flag:= True;
+  a:=3147483647;
+  flag := False;
+  (* the end of
+  the program *)
 end.

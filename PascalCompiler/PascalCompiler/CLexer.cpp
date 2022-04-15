@@ -104,10 +104,14 @@ CTokenPtr CLexer::GetNextToken()
 			++m_cur_sym;
 		} while (m_cur_sym < m_line.size() && m_line[m_cur_sym] != '\'');
 		if (m_cur_sym >= m_line.size()) {
-			// TODO: Error
-			std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
-			ThrowError(err_mes);
-			return nullptr;
+			//std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
+			ThrowError("Unexpected token");
+			return GetNextToken();
+		}
+		else if (m_cur_sym == start) {
+			ThrowError("Character constant error");
+			++m_cur_sym;
+			return GetNextToken();
 		}
 		std::string str = m_line.substr(start, m_cur_sym - start);
 		token = std::make_unique<CConstToken>(str);
@@ -121,10 +125,9 @@ CTokenPtr CLexer::GetNextToken()
 				token = std::make_unique<CConstToken>(value);
 			}
 			else {
-				// TODO: Îøèáêà 
-				std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
-				ThrowError(err_mes);
-				return nullptr;
+				//std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
+				ThrowError("Constant exceeds limit");
+				return GetNextToken();
 			}
 		}
 		else {
@@ -133,10 +136,9 @@ CTokenPtr CLexer::GetNextToken()
 				token =  std::make_unique<CConstToken>(value);
 			}
 			else {
-				// TODO: Îøèáêà 
-				std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
-				ThrowError(err_mes);
-				return nullptr;
+				//std::string err_mes = GenerateErrorMessage(m_file->GetNumLine());
+				ThrowError("Constant exceeds limit");
+				return GetNextToken();
 			}
 		}
 	}
@@ -155,6 +157,12 @@ CTokenPtr CLexer::GetNextToken()
 			}
 		}
 	}
+	else {
+		m_cur_sym++;
+		ThrowError("Forbidden symbol");
+		return GetNextToken();
+	}
+	
 
 	return token;
 }
@@ -238,7 +246,7 @@ bool CLexer::SkipComments() {
 				success = GetNewLine();
 			}
 			if (!success) {
-				// TODO: Error
+				return false;
 			}
 		}
 		++m_cur_sym;
@@ -252,7 +260,7 @@ bool CLexer::SkipComments() {
 				success = GetNewLine();
 			}
 			if (!success) {
-				// TODO: Error
+				return false;
 			}
 		} while (m_cur_sym < m_line.size() - 1 && !(m_line[m_cur_sym] == '*' && m_line[m_cur_sym + 1] == ')'));
 		m_cur_sym += 2;

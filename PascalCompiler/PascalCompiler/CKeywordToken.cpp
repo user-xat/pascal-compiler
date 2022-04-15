@@ -41,8 +41,14 @@ std::string CKeywordToken::ToString() const
 	case ESymbol::AOP_MULT_KEYWORD:
 		result += "*";
 		break;
-	case ESymbol::AOP_DIV_KEYWORD:
+	case ESymbol::AOP_DIV_REAL_KEYWORD:
 		result += "/";
+		break;
+	case ESymbol::AOP_MOD_KEYWORD:
+		result += "mod";
+		break;
+	case ESymbol::AOP_DIV_KEYWORD:
+		result += "div";
 		break;
 	case ESymbol::LOP_AND_KEYWORD:
 		result += "and";
